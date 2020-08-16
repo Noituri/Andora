@@ -12,40 +12,49 @@ int main()
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Andora");
 	SetTargetFPS(60);
 
-	const int TERRAIN_WIDTH = SCREEN_WIDTH;
-	const int TERRAIN_HEIGHT = 200;
+	const int TERRAIN_HEIGHT = 1000;
 
-	Color *terrainPixels = (Color *)malloc(TERRAIN_WIDTH * TERRAIN_HEIGHT * sizeof(Color));
-	for (int x = 0; x < TERRAIN_WIDTH; x++) {
-		int maxY = (int)(PerlinGet2d((double)x/80, 0, 0.5, 4, 11111) * 100);
-		for (int y = maxY; y < TERRAIN_HEIGHT; y++) {
-			terrainPixels[TERRAIN_WIDTH * y + x] = WHITE;
+	Vector2 *visibleBlocks = (Vector2 *) malloc(SCREEN_WIDTH*SCREEN_HEIGHT*sizeof(Vector2));
+
+	int blocksAmount = 0;
+	for (int x = 0; x < (SCREEN_WIDTH / 16 + 10); x++) { // TODO: Use chunks
+		int maxY = (int)(PerlinGet2d((double) x/80, 0, 0.5, 4, 11111) * 100);
+		for (int y = maxY / 16; y < (TERRAIN_HEIGHT / 16 + 10); y++) {
+			visibleBlocks[blocksAmount] = (struct Vector2) { (float) x * 16, (float) y * 16 };
+			blocksAmount++;
 		}
 	}
 
-	Image terrainImg = {
-			.data = terrainPixels,
-			.width = TERRAIN_WIDTH,
-			.height = TERRAIN_HEIGHT,
-			.format = UNCOMPRESSED_R8G8B8A8,
-			.mipmaps = 1
-	};
+	printf("Generated coordinates for %d blocks\n", blocksAmount);
 
-	Texture2D terrain = LoadTextureFromImage(terrainImg);
-	UnloadImage(terrainImg);
+	Image dirtImg = LoadImage("../res/dirt.png");
+	Texture2D dirt = LoadTextureFromImage(dirtImg);
+	UnloadImage(dirtImg);
+
+	Camera2D camera = {
+			.offset = (struct Vector2) { (float) SCREEN_WIDTH / 2, (float) SCREEN_HEIGHT / 2 },
+			.rotation = 0.0f,
+			.target = (struct Vector2) { 720.0f, 100.0f },
+			.zoom = 1.0f
+	};
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 
+		BeginMode2D(camera);
+
 		ClearBackground(BLACK);
-		DrawText("I C nothing wrong with this code", 50, 360, 45, WHITE);
+		for (int i = 0; i < blocksAmount; i++) {
+			DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, visibleBlocks[i], WHITE);
+		}
 
-		DrawTexture(terrain, SCREEN_WIDTH / 2 - terrain.width / 2, SCREEN_HEIGHT - terrain.height, WHITE);
+		EndMode2D();
 
+		DrawFPS(15, 15);
 		EndDrawing();
 	}
 
-	UnloadTexture(terrain);
+	UnloadTexture(dirt);
 	CloseWindow();
 
 	return 0;
