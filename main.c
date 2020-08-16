@@ -39,11 +39,27 @@ int main()
 	};
 
 	while (!WindowShouldClose()) {
+		if (IsKeyDown(KEY_A)) {
+			camera.target.x -= 10;
+		}
+
+		if (IsKeyDown(KEY_D)) {
+			camera.target.x += 10;
+		}
+
+		if (IsKeyDown(KEY_W)) {
+			camera.target.y -= 10;
+		}
+
+		if (IsKeyDown(KEY_S)) {
+			camera.target.y += 10;
+		}
+
 		BeginDrawing();
 
 		BeginMode2D(camera);
 
-		ClearBackground(BLACK);
+		ClearBackground(GetColor(0xB4D5F4));
 		for (int i = 0; i < blocksAmount; i++) {
 			DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, visibleBlocks[i], WHITE);
 		}
