@@ -1,12 +1,11 @@
 #include "worldgen.h"
-#include <stdlib.h>
 #include "perlin.h"
 
 int WorldGen_Generate(Vector2 *blocks, int width, int height, int seed)
 {
 	int i = 0;
 	for (int x = 0; x < (width / 16); x++) {
-		int maxY = (int)(PerlinGet2d((double) x/10, 0, 0.5, 4, seed) * 100);
+		int maxY = (int)(Perlin_Get2d((double)x / 10, 0, 0.5, 4, seed) * 100);
 		for (int y = maxY / 16; y < (height / 16); y++) {
 			blocks[i] = (struct Vector2) { (float) x * 16, (float) y * 16 };
 			i++;

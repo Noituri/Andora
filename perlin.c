@@ -55,7 +55,7 @@ static double noise2d(double x, double y, const int seed)
 	return result;
 }
 
-double PerlinGet2d(double x, double y, double freq, int depth, const int seed)
+double Perlin_Get2d(double x, double y, double freq, int depth, const int seed)
 {
 	double xa = x * freq;
 	double ya = y * freq;
