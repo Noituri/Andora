@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include "perlin.h"
+#include "worldgen.h"
 
 int main()
 {
@@ -12,18 +13,11 @@ int main()
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Andora");
 	SetTargetFPS(60);
 
-	const int TERRAIN_HEIGHT = 1000;
+	const int WORLD_WEIGHT = 8000;
+	const int WORLD_HEIGHT = 2000;
 
-	Vector2 *visibleBlocks = (Vector2 *) malloc(SCREEN_WIDTH*SCREEN_HEIGHT*sizeof(Vector2));
-
-	int blocksAmount = 0;
-	for (int x = 0; x < (SCREEN_WIDTH / 16 + 10); x++) { // TODO: Use chunks
-		int maxY = (int)(PerlinGet2d((double) x/80, 0, 0.5, 4, 11111) * 100);
-		for (int y = maxY / 16; y < (TERRAIN_HEIGHT / 16 + 10); y++) {
-			visibleBlocks[blocksAmount] = (struct Vector2) { (float) x * 16, (float) y * 16 };
-			blocksAmount++;
-		}
-	}
+	Vector2* visibleBlocks = (Vector2 *) malloc(WORLD_WEIGHT*WORLD_HEIGHT*sizeof(Vector2));
+	int blocksAmount = WorldGen_Generate(visibleBlocks, WORLD_WEIGHT, WORLD_HEIGHT, 1010);
 
 	printf("Generated coordinates for %d blocks\n", blocksAmount);
 
@@ -60,9 +54,10 @@ int main()
 		BeginMode2D(camera);
 
 		ClearBackground(GetColor(0xB4D5F4));
-		for (int i = 0; i < blocksAmount; i++) {
-			DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, visibleBlocks[i], WHITE);
-		}
+		WorldGen_RenderVisibleBlocks(dirt, visibleBlocks, blocksAmount, camera.target, SCREEN_WIDTH, SCREEN_HEIGHT);
+//		for (int i = 0; i < blocksAmount; i++) {
+//			DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, visibleBlocks[i], WHITE);
+//		}
 
 		EndMode2D();
 

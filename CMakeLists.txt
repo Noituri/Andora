@@ -22,7 +22,7 @@ if (NOT raylib_FOUND)
     endif()
 endif()
 
-set(PROJECT_SOURCES main.c perlin.c perlin.h)
+set(PROJECT_SOURCES main.c perlin.c perlin.h worldgen.c worldgen.h)
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
 
