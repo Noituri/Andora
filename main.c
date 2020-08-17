@@ -16,8 +16,8 @@ int main()
 	const int WORLD_WEIGHT = 8000;
 	const int WORLD_HEIGHT = 2000;
 
-	Vector2* visibleBlocks = (Vector2 *) malloc(WORLD_WEIGHT*WORLD_HEIGHT*sizeof(Vector2));
-	int blocksAmount = WorldGen_Generate(visibleBlocks, WORLD_WEIGHT, WORLD_HEIGHT, 1010);
+	Vector2* blocks = (Vector2 *) malloc(WORLD_WEIGHT * WORLD_HEIGHT * sizeof(Vector2));
+	int blocksAmount = WorldGen_Generate(blocks, WORLD_WEIGHT, WORLD_HEIGHT, 1010);
 
 	printf("Generated coordinates for %d blocks\n", blocksAmount);
 
@@ -54,10 +54,7 @@ int main()
 		BeginMode2D(camera);
 
 		ClearBackground(GetColor(0xB4D5F4));
-		WorldGen_RenderVisibleBlocks(dirt, visibleBlocks, blocksAmount, camera.target, SCREEN_WIDTH, SCREEN_HEIGHT);
-//		for (int i = 0; i < blocksAmount; i++) {
-//			DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, visibleBlocks[i], WHITE);
-//		}
+		WorldGen_RenderVisibleBlocks(dirt, blocks, blocksAmount, camera.target, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		EndMode2D();
 
