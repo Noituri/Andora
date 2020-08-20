@@ -1,29 +1,26 @@
+#define ECS_IMPLEMENTATION
+
 #include <stdio.h>
 #include <raylib.h>
-#include <stdlib.h>
-#include "perlin.h"
-#include "worldgen.h"
+#include "utils.h"
 
 int main()
 {
-	const int SCREEN_WIDTH = 1280;
-	const int SCREEN_HEIGHT = 720;
-
 	printf("Game init\n");
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Andora");
 	SetTargetFPS(60);
 
-	const int WORLD_WEIGHT = 8000;
+	const int WORLD_WIDTH = 8000;
 	const int WORLD_HEIGHT = 2000;
 
-	Vector2* blocks = (Vector2 *) malloc(WORLD_WEIGHT * WORLD_HEIGHT * sizeof(Vector2));
-	int blocksAmount = WorldGen_Generate(blocks, WORLD_WEIGHT, WORLD_HEIGHT, 1010);
+	Ecs *world = ecs_make(MAX_ENTITIES, COMPONENT_COUNT, 1);
 
-	printf("Generated coordinates for %d blocks\n", blocksAmount);
+//	Vector2* blocks = (Vector2 *) malloc(WORLD_WEIGHT * WORLD_HEIGHT * sizeof(Vector2));
+//	int blocksAmount = WorldGen_Generate(blocks, WORLD_WEIGHT, WORLD_HEIGHT, 1010);
 
-	Image dirtImg = LoadImage("../res/dirt.png");
-	Texture2D dirt = LoadTextureFromImage(dirtImg);
-	UnloadImage(dirtImg);
+//	printf("Generated coordinates for %d blocks\n", blocksAmount);
+
+    initGame(world);
 
 	Camera2D camera = {
 			.offset = (struct Vector2) { (float) SCREEN_WIDTH / 2, (float) SCREEN_HEIGHT / 2 },
@@ -32,7 +29,11 @@ int main()
 			.zoom = 1.0f
 	};
 
+	createTerrain(world, WORLD_WIDTH, WORLD_HEIGHT, 1101);
+
 	while (!WindowShouldClose()) {
+        ecs_run_systems(world, ECS_SYSTEM_UPDATE);
+//	    FIXME: Port this to the ecs system
 		if (IsKeyDown(KEY_A)) {
 			camera.target.x -= 10;
 		}
@@ -54,16 +55,16 @@ int main()
 		BeginMode2D(camera);
 
 		ClearBackground(GetColor(0xB4D5F4));
-		WorldGen_RenderVisibleBlocks(dirt, blocks, blocksAmount, camera.target, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		EndMode2D();
+        ecs_run_systems(world, ECS_SYSTEM_RENDER);
+
+        EndMode2D();
 
 		DrawFPS(15, 15);
 		EndDrawing();
 	}
 
-	UnloadTexture(dirt);
-	CloseWindow();
+	freeGame(world);
 
 	return 0;
 }
