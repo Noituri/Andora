@@ -3,7 +3,8 @@
 
 #include "components.h"
 
-void register_systems(Ecs *world);
-void renderTerrain();
+void registerSystems(Ecs *world);
+void renderTerrain(Ecs *world);
+void moveCamera(Ecs *world);
 
 #endif //ANDORA_SYSTEMS_H

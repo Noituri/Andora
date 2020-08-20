@@ -24,7 +24,7 @@ typedef struct {
     int seed;
 } CTerrain;
 
-void register_components(Ecs *world);
+void registerComponents(Ecs *world);
 void createTerrain(Ecs *world, int width, int height, int seed);
 
 #endif //ANDORA_COMPONENTS_H

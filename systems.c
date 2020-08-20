@@ -3,9 +3,11 @@
 #include "utils.h"
 
 extern Texture2D dirt;
+extern Camera2D camera;
 
-void register_systems(Ecs *world)
+void registerSystems(Ecs *world)
 {
+    ecs_register_system(world, moveCamera, ECS_SYSTEM_UPDATE);
     ecs_register_system(world, renderTerrain, ECS_SYSTEM_RENDER);
 }
 
@@ -31,6 +33,36 @@ void renderTerrain(Ecs *world)
 
                 DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
             }
+        }
+    }
+}
+
+#define RENDER_TERRAIN_SYSTEM_MASK \
+ECS_MASK(2, COMPONENT_TERRAIN, COMPONENT_TRANSFORM)
+void moveCamera(Ecs *world)
+{
+    for (uint32_t i = 0; i < ecs_for_count(world); i++) {
+        EcsEnt entity = ecs_get_ent(world, i);
+        if (ecs_ent_has_mask(world, entity, RENDER_TERRAIN_SYSTEM_MASK)) {
+            CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
+
+            if (IsKeyDown(KEY_A)) {
+                camera.target.x -= 10;
+            }
+
+            if (IsKeyDown(KEY_D)) {
+                camera.target.x += 10;
+            }
+
+            if (IsKeyDown(KEY_W)) {
+                camera.target.y -= 10;
+            }
+
+            if (IsKeyDown(KEY_S)) {
+                camera.target.y += 10;
+            }
+
+            *pos = camera.target;
         }
     }
 }
