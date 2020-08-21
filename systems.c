@@ -31,7 +31,7 @@ void renderTerrain(Ecs *world)
                 if (tmpBlock.x > rightOffset || tmpBlock.x < leftOffset || tmpBlock.y > bottomOffset || tmpBlock.y < topOffset)
                     continue;
 
-                DrawTextureRec(dirt, (struct Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
+                DrawTextureRec(dirt, (Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
             }
         }
     }

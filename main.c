@@ -20,15 +20,22 @@ int main()
     initGame(world);
 
 	createTerrain(world, WORLD_WIDTH, WORLD_HEIGHT, 1101);
+	createPlayer(world);
 
 	while (!WindowShouldClose()) {
         ecs_run_systems(world, ECS_SYSTEM_UPDATE);
+
 		BeginDrawing();
+
             BeginMode2D(camera);
+
                 ClearBackground(GetColor(0xB4D5F4));
                 ecs_run_systems(world, ECS_SYSTEM_RENDER);
+
             EndMode2D();
+
             DrawFPS(15, 15);
+
 		EndDrawing();
 	}
 
