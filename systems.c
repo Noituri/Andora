@@ -37,13 +37,13 @@ void renderTerrain(Ecs *world)
     }
 }
 
-#define RENDER_TERRAIN_SYSTEM_MASK \
+#define MOVE_CAMERA_SYSTEM_MASK \
 ECS_MASK(2, COMPONENT_TERRAIN, COMPONENT_TRANSFORM)
 void moveCamera(Ecs *world)
 {
     for (uint32_t i = 0; i < ecs_for_count(world); i++) {
         EcsEnt entity = ecs_get_ent(world, i);
-        if (ecs_ent_has_mask(world, entity, RENDER_TERRAIN_SYSTEM_MASK)) {
+        if (ecs_ent_has_mask(world, entity, MOVE_CAMERA_SYSTEM_MASK)) {
             CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
 
             if (IsKeyDown(KEY_A)) {
