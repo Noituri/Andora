@@ -10,7 +10,7 @@ int frameCounter = 0;
 
 void registerSystems(Ecs *world)
 {
-    ecs_register_system(world, moveCamera, ECS_SYSTEM_UPDATE);
+    ecs_register_system(world, movePlayer, ECS_SYSTEM_UPDATE);
     ecs_register_system(world, renderTerrain, ECS_SYSTEM_RENDER);
     ecs_register_system(world, renderSprite, ECS_SYSTEM_RENDER);
 }
@@ -23,12 +23,12 @@ void renderTerrain(Ecs *world)
         EcsEnt entity = ecs_get_ent(world, i);
         if (ecs_ent_has_mask(world, entity, RENDER_TERRAIN_SYSTEM_MASK)) {
             CTerrain *terrain = ecs_ent_get_component(world, entity, COMPONENT_TERRAIN);
-            CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
+            Vector2 pos = camera.target;
 
-            float rightOffset = (pos->x + (float) SCREEN_WIDTH / 2.0f) + 40.0f;
-            float leftOffset = (pos->x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
-            float bottomOffset = (pos->y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
-            float topOffset = (pos->y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
+            float rightOffset = (pos.x + (float) SCREEN_WIDTH / 2.0f) + 40.0f;
+            float leftOffset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
+            float bottomOffset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
+            float topOffset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
 
             for (int j = 0; j < terrain->blocksSize; j++) {
                 Vector2 tmpBlock = terrain->blocks[j];
@@ -41,32 +41,33 @@ void renderTerrain(Ecs *world)
     }
 }
 
-#define MOVE_CAMERA_SYSTEM_MASK \
-ECS_MASK(2, COMPONENT_TERRAIN, COMPONENT_TRANSFORM)
-void moveCamera(Ecs *world)
+#define MOVE_PLAYER_SYSTEM_MASK \
+ECS_MASK(3, COMPONENT_PLAYER_STATE, COMPONENT_PHYSICS, COMPONENT_TRANSFORM)
+void movePlayer(Ecs *world)
 {
     for (uint32_t i = 0; i < ecs_for_count(world); i++) {
         EcsEnt entity = ecs_get_ent(world, i);
-        if (ecs_ent_has_mask(world, entity, MOVE_CAMERA_SYSTEM_MASK)) {
+        if (ecs_ent_has_mask(world, entity, MOVE_PLAYER_SYSTEM_MASK)) {
+            CPhysics *body = ecs_ent_get_component(world, entity, COMPONENT_PHYSICS);
             CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
+            *pos = (*body)->position;
+//            if (IsKeyDown(KEY_A)) {
+//                camera.target.x -= 10;
+//            }
+//
+//            if (IsKeyDown(KEY_D)) {
+//                camera.target.x += 10;
+//            }
+//
+//            if (IsKeyDown(KEY_W)) {
+//                camera.target.y -= 10;
+//            }
+//
+//            if (IsKeyDown(KEY_S)) {
+//                camera.target.y += 10;
+//            }
 
-            if (IsKeyDown(KEY_A)) {
-                camera.target.x -= 10;
-            }
-
-            if (IsKeyDown(KEY_D)) {
-                camera.target.x += 10;
-            }
-
-            if (IsKeyDown(KEY_W)) {
-                camera.target.y -= 10;
-            }
-
-            if (IsKeyDown(KEY_S)) {
-                camera.target.y += 10;
-            }
-
-            *pos = camera.target;
+//            *pos = camera.target;
         }
     }
 }

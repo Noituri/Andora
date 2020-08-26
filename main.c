@@ -10,12 +10,14 @@ int main()
 {
 	printf("Game init\n");
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Andora");
-	SetTargetFPS(60);
+	InitPhysics();
 
-	const int WORLD_WIDTH = 8000;
+    SetTargetFPS(60);
+
+    const int WORLD_WIDTH = 8000;
 	const int WORLD_HEIGHT = 2000;
 
-	Ecs *world = ecs_make(MAX_ENTITIES, COMPONENT_COUNT, 2);
+	Ecs *world = ecs_make(MAX_ENTITIES, COMPONENT_COUNT, 3);
 
     initGame(world);
 
@@ -23,6 +25,7 @@ int main()
 	createPlayer(world);
 
 	while (!WindowShouldClose()) {
+	    RunPhysicsStep();
         ecs_run_systems(world, ECS_SYSTEM_UPDATE);
 
 		BeginDrawing();
