@@ -3,18 +3,14 @@
 #include "components.h"
 #include "third_party/perlin.h"
 
-void freeSprite(void *data)
-{
-    CSprite *sprite = (CSprite *) data;
-    UnloadTexture(sprite->sprite);
-}
+extern Texture2D playerTxt;
 
 void registerComponents(Ecs *world)
 {
     ecs_register_component(world, COMPONENT_TERRAIN, 1000, sizeof(CTerrain), NULL);
     ecs_register_component(world, COMPONENT_TRANSFORM, 1000, sizeof(CTransform), NULL);
     ecs_register_component(world, COMPONENT_PLAYER_STATE, 1000, sizeof(CPlayerState), NULL);
-    ecs_register_component(world, COMPONENT_SPRITE, 1000, sizeof(CSprite), freeSprite);
+    ecs_register_component(world, COMPONENT_SPRITE, 1000, sizeof(CSprite), NULL);
 }
 
 void createTerrain(Ecs *world, int width, int height, int seed)
@@ -52,12 +48,13 @@ void createPlayer(Ecs *world)
     CPlayerState pState = PLAYER_IDLE;
     CTransform transform = { 720.0f, 100.0f };
 
-    Image img = LoadImage("../res/player.png");
     CSprite sprite = {
-            .sprite = LoadTextureFromImage(img),
-            .sprites = 9
+            .sprite = playerTxt,
+            .sprites = 9,
+            .width = playerTxt.width / 9,
+            .height = 64 * 2,
+            .frame = 0
     };
-    UnloadImage(img);
 
     ecs_ent_add_component(world, entity, COMPONENT_PLAYER_STATE, &pState);
     ecs_ent_add_component(world, entity, COMPONENT_TRANSFORM, &transform);

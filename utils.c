@@ -1,15 +1,22 @@
 #include "utils.h"
 #include <raylib.h>
 
-Texture2D dirt;
+Texture2D dirtTxt;
+Texture2D playerTxt;
+
 Camera2D camera;
 
 void initGame(Ecs *world)
 {
     // Textures
     Image dirtImg = LoadImage("../res/dirt.png");
-    dirt = LoadTextureFromImage(dirtImg);
+    dirtTxt = LoadTextureFromImage(dirtImg);
     UnloadImage(dirtImg);
+
+    Image playerImg = LoadImage("../res/player.png");
+    ImageResize(&playerImg, playerImg.width * 2, playerImg.height * 2);
+    playerTxt = LoadTextureFromImage(playerImg);
+    UnloadImage(playerImg);
 
     // Camera
     camera = (Camera2D) {
@@ -27,6 +34,7 @@ void initGame(Ecs *world)
 void freeGame(Ecs *world)
 {
     ecs_destroy(world);
-    UnloadTexture(dirt);
+    UnloadTexture(dirtTxt);
+    UnloadTexture(playerTxt);
     CloseWindow();
 }

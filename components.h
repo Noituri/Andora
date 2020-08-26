@@ -19,6 +19,9 @@ typedef Vector2 CTransform;
 typedef struct {
     Texture2D sprite;
     int sprites;
+    int width;
+    int height;
+    int frame;
 } CSprite;
 
 typedef enum {

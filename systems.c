@@ -2,13 +2,17 @@
 #include "systems.h"
 #include "utils.h"
 
-extern Texture2D dirt;
+extern Texture2D dirtTxt;
+extern Texture2D playerTxt;
 extern Camera2D camera;
+
+int frameCounter = 0;
 
 void registerSystems(Ecs *world)
 {
     ecs_register_system(world, moveCamera, ECS_SYSTEM_UPDATE);
     ecs_register_system(world, renderTerrain, ECS_SYSTEM_RENDER);
+    ecs_register_system(world, renderSprite, ECS_SYSTEM_RENDER);
 }
 
 #define RENDER_TERRAIN_SYSTEM_MASK \
@@ -31,7 +35,7 @@ void renderTerrain(Ecs *world)
                 if (tmpBlock.x > rightOffset || tmpBlock.x < leftOffset || tmpBlock.y > bottomOffset || tmpBlock.y < topOffset)
                     continue;
 
-                DrawTextureRec(dirt, (Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
+                DrawTextureRec(dirtTxt, (Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
             }
         }
     }
@@ -63,6 +67,36 @@ void moveCamera(Ecs *world)
             }
 
             *pos = camera.target;
+        }
+    }
+}
+
+#define RENDER_SPRITE_SYSTEM_MASK \
+ECS_MASK(2, COMPONENT_SPRITE, COMPONENT_TRANSFORM)
+void renderSprite(Ecs *world)
+{
+    for (uint32_t i = 0; i < ecs_for_count(world); i++) {
+        EcsEnt entity = ecs_get_ent(world, i);
+        if (ecs_ent_has_mask(world, entity, RENDER_SPRITE_SYSTEM_MASK)) {
+            CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
+            CSprite *sprite = ecs_ent_get_component(world, entity, COMPONENT_SPRITE);
+
+            Rectangle rec = {
+                    .width = (float) sprite->width,
+                    .height = (float) sprite->height,
+                    .x = (float) sprite->frame * (float) sprite->width,
+                    .y = 0
+            };
+            frameCounter++;
+            if (frameCounter % 10 == 0)
+                sprite->frame++;
+
+            if (frameCounter == 60)
+                frameCounter = 0;
+
+            if (sprite-> frame > sprite->sprites)
+                sprite->frame = 0;
+            DrawTextureRec(sprite->sprite, rec, *pos, WHITE);
         }
     }
 }
