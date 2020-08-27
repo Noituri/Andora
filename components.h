@@ -1,10 +1,8 @@
 #ifndef ANDORA_COMPONENTS_H
 #define ANDORA_COMPONENTS_H
 
-#define PHYSAC_IMPLEMENTATION
-
-#include "raylib.h"
-#include "physac.h"
+#include <raylib.h>
+#include <physac.h>
 #include "third_party/ecs.h"
 
 typedef enum {

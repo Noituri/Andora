@@ -1,7 +1,10 @@
+#define PHYSAC_IMPLEMENTATION
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "components.h"
 #include "third_party/perlin.h"
+
 
 extern Texture2D playerTxt;
 
@@ -59,6 +62,7 @@ void createPlayer(Ecs *world)
 
     CPhysics body = CreatePhysicsBodyRectangle(transform, (float) playerTxt.width / 9, 64 * 2, 1);
     body->freezeOrient = true;
+
     ecs_ent_add_component(world, entity, COMPONENT_PLAYER_STATE, &pState);
     ecs_ent_add_component(world, entity, COMPONENT_TRANSFORM, &transform);
     ecs_ent_add_component(world, entity, COMPONENT_SPRITE, &sprite);

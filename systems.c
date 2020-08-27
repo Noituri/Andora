@@ -1,3 +1,5 @@
+#define PHYSAC_IMPLEMENTATION
+
 #include <stdio.h>
 #include "systems.h"
 #include "utils.h"
