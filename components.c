@@ -1,10 +1,7 @@
-#define PHYSAC_IMPLEMENTATION
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "components.h"
 #include "third_party/perlin.h"
-
 
 extern Texture2D playerTxt;
 
@@ -14,7 +11,7 @@ void registerComponents(Ecs *world)
     ecs_register_component(world, COMPONENT_TRANSFORM, 1000, sizeof(CTransform), NULL);
     ecs_register_component(world, COMPONENT_PLAYER_STATE, 1000, sizeof(CPlayerState), NULL);
     ecs_register_component(world, COMPONENT_SPRITE, 1000, sizeof(CSprite), NULL);
-    ecs_register_component(world, COMPONENT_PHYSICS, 1000, sizeof(CPhysics), NULL);
+//    ecs_register_component(world, COMPONENT_PHYSICS, 1000, sizeof(CPhysics), NULL);
 }
 
 void createTerrain(Ecs *world, int width, int height, int seed)
@@ -50,7 +47,7 @@ void createPlayer(Ecs *world)
 {
     EcsEnt entity = ecs_ent_make(world);
     CPlayerState pState = PLAYER_IDLE;
-    CTransform transform = { 720.0f, -100.0f };
+    CTransform transform = { 720.0f, -150.0f };
 
     CSprite sprite = {
             .sprite = playerTxt,
@@ -60,11 +57,29 @@ void createPlayer(Ecs *world)
             .frame = 0
     };
 
-    CPhysics body = CreatePhysicsBodyRectangle(transform, (float) playerTxt.width / 9, 64 * 2, 1);
-    body->freezeOrient = true;
+//    CPhysics body = CreatePhysicsBodyRectangle(transform, (float) playerTxt.width / 9, 64 * 2, 1);
+//    body->freezeOrient = true;
 
     ecs_ent_add_component(world, entity, COMPONENT_PLAYER_STATE, &pState);
     ecs_ent_add_component(world, entity, COMPONENT_TRANSFORM, &transform);
     ecs_ent_add_component(world, entity, COMPONENT_SPRITE, &sprite);
-    ecs_ent_add_component(world, entity, COMPONENT_PHYSICS, &body);
+//    ecs_ent_add_component(world, entity, COMPONENT_PHYSICS, &body);
+}
+
+void renderCollisions()
+{
+//	int bodiesCount = GetPhysicsBodiesCount();
+//	for (int i = 0; i < bodiesCount; i++) {
+//		PhysicsBody body = GetPhysicsBody(i);
+//
+//		int vertexCount = GetPhysicsShapeVerticesCount(i);
+//		for (int j = 0; j < vertexCount; j++) {
+//			Vector2 vertexA = GetPhysicsShapeVertex(body, j);
+//
+//			int jj = (((j + 1) < vertexCount) ? (j + 1) : 0);
+//			Vector2 vertexB = GetPhysicsShapeVertex(body, jj);
+//
+//			DrawLineV(vertexA, vertexB, RED);
+//		}
+//	}
 }

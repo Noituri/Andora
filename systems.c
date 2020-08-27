@@ -1,5 +1,3 @@
-#define PHYSAC_IMPLEMENTATION
-
 #include <stdio.h>
 #include "systems.h"
 #include "utils.h"
@@ -39,7 +37,7 @@ void renderTerrain(Ecs *world)
 
                 DrawTextureRec(dirtTxt, (Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
             }
-        }
+		}
     }
 }
 
@@ -50,9 +48,13 @@ void movePlayer(Ecs *world)
     for (uint32_t i = 0; i < ecs_for_count(world); i++) {
         EcsEnt entity = ecs_get_ent(world, i);
         if (ecs_ent_has_mask(world, entity, MOVE_PLAYER_SYSTEM_MASK)) {
-            CPhysics *body = ecs_ent_get_component(world, entity, COMPONENT_PHYSICS);
-            CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
-            *pos = (*body)->position;
+//            CPhysics *body = ecs_ent_get_component(world, entity, COMPONENT_PHYSICS);
+//            CTransform *pos = ecs_ent_get_component(world, entity, COMPONENT_TRANSFORM);
+//            Vector2 newPos = (*body)->position;
+
+//            if (pos->x != newPos.x || pos->y != newPos.y)
+//            	posChanged = true;
+//            *pos = (*body)->position;
 //            if (IsKeyDown(KEY_A)) {
 //                camera.target.x -= 10;
 //            }

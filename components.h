@@ -1,8 +1,7 @@
 #ifndef ANDORA_COMPONENTS_H
 #define ANDORA_COMPONENTS_H
 
-#include <raylib.h>
-#include <physac.h>
+#include "raylib.h"
 #include "third_party/ecs.h"
 
 typedef enum {
@@ -38,7 +37,7 @@ typedef struct {
     int seed;
 } CTerrain;
 
-typedef PhysicsBody CPhysics;
+//typedef PhysicsBody CPhysics;
 
 void registerComponents(Ecs *world);
 void createTerrain(Ecs *world, int width, int height, int seed);

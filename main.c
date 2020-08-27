@@ -1,7 +1,5 @@
 #define ECS_IMPLEMENTATION
 
-#include <stdio.h>
-#include <raylib.h>
 #include "utils.h"
 
 extern Camera2D camera;
@@ -10,7 +8,6 @@ int main()
 {
 	printf("Game init\n");
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Andora");
-	InitPhysics();
 
     SetTargetFPS(60);
 
@@ -25,7 +22,6 @@ int main()
 	createPlayer(world);
 
 	while (!WindowShouldClose()) {
-	    RunPhysicsStep();
         ecs_run_systems(world, ECS_SYSTEM_UPDATE);
 
 		BeginDrawing();
@@ -34,6 +30,7 @@ int main()
 
                 ClearBackground(GetColor(0xB4D5F4));
                 ecs_run_systems(world, ECS_SYSTEM_RENDER);
+                renderCollisions();
 
             EndMode2D();
 

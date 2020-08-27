@@ -9,5 +9,6 @@
 
 void initGame(Ecs *world);
 void freeGame(Ecs *world);
+void renderCollisions();
 
 #endif //ANDORA_UTILS_H

@@ -36,6 +36,5 @@ void freeGame(Ecs *world)
     ecs_destroy(world);
     UnloadTexture(dirtTxt);
     UnloadTexture(playerTxt);
-    ClosePhysics();
     CloseWindow();
 }
