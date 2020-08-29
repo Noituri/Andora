@@ -12,17 +12,27 @@ typedef struct {
 } AABB;
 
 typedef struct {
+    int layer;
+    float width;
+    float height;
 	Vector2 position;
 	Vector2 velocity;
+    Vector2 force;
+    
 	float restitution;
+    float density;
+    
 	float mass;
 	float invMass;
-	AABB aabb;
-} PObject;
+	
+    int dynamic;
+    
+    AABB aabb;
+} Body;
 
 typedef struct {
-	PObject *A;
-	PObject *B;
+    Body *A;
+    Body *B;
 	float penetration;
 	Vector2 normal;
 } Manifold;
