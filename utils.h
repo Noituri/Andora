@@ -7,8 +7,8 @@
 
 #include "systems.h"
 
-void initGame(Ecs *world);
-void freeGame(Ecs *world);
-void renderCollisions();
+void InitGame(Ecs *world);
+void FreeGame(Ecs *world);
+void RenderCollisions();
 
 #endif //ANDORA_UTILS_H

@@ -10,14 +10,14 @@ typedef enum {
     COMPONENT_TERRAIN,
     COMPONENT_PLAYER_STATE,
     COMPONENT_PHYSICS,
-
+    
     COMPONENT_COUNT
 } ComponentType;
 
 typedef Vector2 CTransform;
 
 typedef struct {
-    Texture2D sprite;
+    Texture2D txt;
     int sprites;
     int width;
     int height;
@@ -31,7 +31,7 @@ typedef enum {
 
 typedef struct {
     Vector2 *blocks;
-    int blocksSize;
+    int blocks_size;
     int width;
     int height;
     int seed;
@@ -39,8 +39,9 @@ typedef struct {
 
 //typedef PhysicsBody CPhysics;
 
-void registerComponents(Ecs *world);
-void createTerrain(Ecs *world, int width, int height, int seed);
-void createPlayer(Ecs *world);
+void RegisterComponents(Ecs *world);
+void CreateTerrain(Ecs *world, int width, int height, int seed);
+void CreatePlayer(Ecs *world);
+void RenderCollisions();
 
 #endif //ANDORA_COMPONENTS_H

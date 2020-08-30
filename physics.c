@@ -7,28 +7,28 @@
 const float fps = 60;
 const float dt = 1 / 60;
 float accumulator = 0.0f;
-time_t timeStart;
+time_t time_start;
 
-Manifold collisionPairs[1000];
+Manifold collision_pairs[1000];
 Body bodies[1000];
-int bodiesCount, pairsCount = 0;
+int bodies_count, pairs_count = 0;
 
 void InitPhysics()
 {
-    timeStart = time(NULL);
+    time_start = time(NULL);
 }
 
-int AddBody(Body newBody)
+int AddBody(Body new_body)
 {
-    int currentBodiesCount = bodiesCount;
-    bodies[bodiesCount++] = newBody;
-    return currentBodiesCount;
+    int current_count = bodies_count;
+    bodies[bodies_count++] = new_body;
+    return current_count;
 }
 
-void RemoveBody(int bodyIndex)
+void RemoveBody(int body_index)
 {
-    bodies[bodyIndex] = bodies[bodiesCount-1];
-    bodiesCount--;
+    bodies[body_index] = bodies[bodies_count-1];
+    bodies_count--;
 }
 
 void positionalCorrection(Manifold *m)
@@ -38,10 +38,10 @@ void positionalCorrection(Manifold *m)
     
     const float percent = 0.2f;
     const float slop = 0.01f;
-    float tmp = (max(m->penetration - slop, 0.0f) / (A->invMass + B->invMass)) * percent;
+    float tmp = (max(m->penetration - slop, 0.0f) / (A->inv_mass + B->inv_mass)) * percent;
     Vector2 correction = Vector2Scale(m->normal, tmp);
-    A->position = Vector2Subtract(A->position, Vector2Scale(correction, A->invMass));
-    B->position = Vector2Add(B->position, Vector2Scale(correction, B->invMass));
+    A->position = Vector2Subtract(A->position, Vector2Scale(correction, A->inv_mass));
+    B->position = Vector2Add(B->position, Vector2Scale(correction, B->inv_mass));
 }
 
 void ResolveCollision(Manifold *m)
@@ -49,82 +49,82 @@ void ResolveCollision(Manifold *m)
     Body *A = m->A;
     Body *B = m->B;
     
-    Vector2 relativeV = Vector2Subtract(B->velocity, A->velocity);
-    float velAlongNormal = Vector2DotProduct(relativeV, m->normal);
-    if (velAlongNormal > 0)
+    Vector2 relative_v = Vector2Subtract(B->velocity, A->velocity);
+    float vel_along_normal = Vector2DotProduct(relative_v, m->normal);
+    if (vel_along_normal > 0)
         return;
     
     if(A->mass == 0)
-        A->invMass = 0;
+        A->inv_mass = 0;
     else
-        A->invMass = 1 / A->mass;
+        A->inv_mass = 1 / A->mass;
     
     if(B->mass == 0)
-        B->invMass = 0;
+        B->inv_mass = 0;
     else
-        B->invMass = 1 / B->mass;
+        B->inv_mass = 1 / B->mass;
     
     float e = min(A->restitution, B->restitution);
-    float j = -(e + 1) * velAlongNormal;
+    float j = -(e + 1) * vel_along_normal;
     
     j /= 1 / A->mass + 1 / B->mass;
     
     Vector2 impulse = Vector2Scale(m->normal, j);
-    float massSum = A->mass + B->mass;
+    float mass_sum = A->mass + B->mass;
     
-    float ratio = A->mass / massSum;
+    float ratio = A->mass / mass_sum;
     A->velocity = Vector2Subtract(A->velocity, Vector2Scale(impulse, ratio));
     
-    ratio = B->mass / massSum;
+    ratio = B->mass / mass_sum;
     B->velocity = Vector2Add(B->velocity, Vector2Scale(impulse, ratio));
     
-    relativeV = Vector2Subtract(B->velocity, A->velocity);
-    Vector2 tmpDot = Vector2Scale(m->normal, Vector2DotProduct(relativeV, m->normal));
-    Vector2 tangent = Vector2Subtract(relativeV, tmpDot);
+    relative_v = Vector2Subtract(B->velocity, A->velocity);
+    Vector2 tmp_dot = Vector2Scale(m->normal, Vector2DotProduct(relative_v, m->normal));
+    Vector2 tangent = Vector2Subtract(relative_v, tmp_dot);
     tangent = Vector2Normalize(tangent);
     
-    float jt = -Vector2DotProduct(relativeV, tangent);
-    jt /= A->invMass + B->invMass;
+    float jt = -Vector2DotProduct(relative_v, tangent);
+    jt /= A->inv_mass + B->inv_mass;
     
-    float mu = pythagoreanSolve(A->staticFriction, B->staticFriction);
+    float mu = pythagoreanSolve(A->static_friction, B->static_friction);
     
-    Vector2 frictionImpulse = {};
+    Vector2 friction_impulse = {};
     if (fabsf(jt) < j * mu) {
-        frictionImpulse = Vector2Scale(tangent, jt);
+        friction_impulse = Vector2Scale(tangent, jt);
     } else {
-        float dynamicFriction = pythagoreanSolve(A->dynamicFriction, B->dynamicFriction);
-        frictionImpulse = Vector2Scale(tangent, -j * dynamicFriction);
+        float dynamic_friction = pythagoreanSolve(A->dynamic_friction, B->dynamic_friction);
+        friction_impulse = Vector2Scale(tangent, -j * dynamic_friction);
     }
     
-    A->velocity = Vector2Subtract(A->velocity, Vector2Scale(frictionImpulse, A->invMass));
-    B->velocity = Vector2Add(B->velocity, Vector2Scale(frictionImpulse, B->invMass));
+    A->velocity = Vector2Subtract(A->velocity, Vector2Scale(friction_impulse, A->inv_mass));
+    B->velocity = Vector2Add(B->velocity, Vector2Scale(friction_impulse, B->inv_mass));
 }
 
 int AABBvsAABB(Manifold *m)
 {
     Vector2 normal = Vector2Subtract(m->B->position, m->A->position);
-    float aExtent = (m->A->aabb.max.x - m->A->aabb.min.x) / 2;
-    float bExtent = (m->B->aabb.max.x - m->B->aabb.min.x) / 2;
+    float a_extent = (m->A->aabb.max.x - m->A->aabb.min.x) / 2;
+    float b_extent = (m->B->aabb.max.x - m->B->aabb.min.x) / 2;
     
-    float xOverlap = aExtent + bExtent - fabsf(normal.x);
-    if (xOverlap > 0) {
-        float aExtent = (m->A->aabb.max.y - m->A->aabb.min.y) / 2;
-        float bExtent = (m->B->aabb.max.y - m->B->aabb.min.y) / 2;
+    float x_overlap = a_extent + b_extent - fabsf(normal.x);
+    if (x_overlap > 0) {
+        float a_extent = (m->A->aabb.max.y - m->A->aabb.min.y) / 2;
+        float b_extent = (m->B->aabb.max.y - m->B->aabb.min.y) / 2;
         
-        float yOverlap = aExtent + bExtent - fabsf(normal.y);
-        if (yOverlap > 0) {
-            if (xOverlap > yOverlap) {
+        float y_overlap = a_extent + b_extent - fabsf(normal.y);
+        if (y_overlap > 0) {
+            if (x_overlap > y_overlap) {
                 if (normal.x < 0)
                     m->normal = (Vector2) {-1, 0};
                 else
                     m->normal = Vector2Zero();
-                m->penetration = xOverlap;
+                m->penetration = x_overlap;
             } else {
                 if (normal.y < 0)
                     m->normal = (Vector2) {0, -1};
                 else
                     m->normal = (Vector2) {0, 1};
-                m->penetration = yOverlap;
+                m->penetration = y_overlap;
             }
             
             return 1;
@@ -136,9 +136,9 @@ int AABBvsAABB(Manifold *m)
 
 void PhysicsStep()
 {
-    time_t currentTime = time(NULL);
-    accumulator += currentTime - timeStart;
-    timeStart = currentTime;
+    time_t current_time = time(NULL);
+    accumulator += current_time - time_start;
+    time_start = current_time;
     
     if (accumulator > 0.2f)
         accumulator = 0.2f;
@@ -150,7 +150,7 @@ void PhysicsStep()
     const float alpha = accumulator / dt;
 }
 
-AABB CalculateAABB(Body *b)
+AABB calculateAABB(Body *b)
 {
     // TODO: Check this implementation
     AABB tmp = {
@@ -165,12 +165,12 @@ void GenerateContactPairs()
 {
     AABB A_aabb;
     AABB B_aabb;
-    printf("BODIES COUNT: %d\n", bodiesCount);
+    printf("BODIES COUNT: %d\n", bodies_count);
     
-    for (int i = 0; i < bodiesCount; i++) {
+    for (int i = 0; i < bodies_count; i++) {
         Body *A = &bodies[i];
         
-        for (int j = i + 1; j < bodiesCount; j++) {
+        for (int j = i + 1; j < bodies_count; j++) {
             Body *B = &bodies[j];
             if (!A->dynamic && !B->dynamic)
                 continue;
@@ -178,8 +178,8 @@ void GenerateContactPairs()
             if (!(A->layer & B->layer))
                 continue;
             
-            A->aabb = CalculateAABB(A);
-            B->aabb = CalculateAABB(B);
+            A->aabb = calculateAABB(A);
+            B->aabb = calculateAABB(B);
             
             Manifold manifold = {
                 .A = A,
@@ -187,7 +187,7 @@ void GenerateContactPairs()
             };
             printf("TESTING AABBtoAABB\n");
             if (AABBvsAABB(&manifold)) {
-                collisionPairs[pairsCount++] = manifold;
+                collision_pairs[pairs_count++] = manifold;
             }
         }
     }

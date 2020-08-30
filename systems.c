@@ -2,13 +2,13 @@
 #include "systems.h"
 #include "utils.h"
 
-extern Texture2D dirtTxt;
-extern Texture2D playerTxt;
+extern Texture2D dirt_txt;
+extern Texture2D player_txt;
 extern Camera2D camera;
 
-int frameCounter = 0;
+int frame_counter = 0;
 
-void registerSystems(Ecs *world)
+void RegisterSystems(Ecs *world)
 {
     ecs_register_system(world, movePlayer, ECS_SYSTEM_UPDATE);
     ecs_register_system(world, renderTerrain, ECS_SYSTEM_RENDER);
@@ -25,17 +25,17 @@ void renderTerrain(Ecs *world)
             CTerrain *terrain = ecs_ent_get_component(world, entity, COMPONENT_TERRAIN);
             Vector2 pos = camera.target;
             
-            float rightOffset = (pos.x + (float) SCREEN_WIDTH / 2.0f) + 40.0f;
-            float leftOffset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
-            float bottomOffset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
-            float topOffset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
+            float right_offset = (pos.x + (float) SCREEN_WIDTH / 2.0f) + 40.0f;
+            float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
+            float bottom_offset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
+            float top_offset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
             
-            for (int j = 0; j < terrain->blocksSize; j++) {
-                Vector2 tmpBlock = terrain->blocks[j];
-                if (tmpBlock.x > rightOffset || tmpBlock.x < leftOffset || tmpBlock.y > bottomOffset || tmpBlock.y < topOffset)
+            for (int j = 0; j < terrain->blocks_size; j++) {
+                Vector2 tmp_block = terrain->blocks[j];
+                if (tmp_block.x > right_offset || tmp_block.x < left_offset || tmp_block.y > bottom_offset || tmp_block.y < top_offset)
                     continue;
                 
-                DrawTextureRec(dirtTxt, (Rectangle) {40, 100, 16, 16}, tmpBlock, WHITE);
+                DrawTextureRec(dirt_txt, (Rectangle) {40, 100, 16, 16}, tmp_block, WHITE);
             }
 		}
     }
@@ -92,16 +92,16 @@ void renderSprite(Ecs *world)
                 .x = (float) sprite->frame * (float) sprite->width,
                 .y = 0
             };
-            frameCounter++;
-            if (frameCounter % 10 == 0)
+            frame_counter++;
+            if (frame_counter % 10 == 0)
                 sprite->frame++;
             
-            if (frameCounter == 60)
-                frameCounter = 0;
+            if (frame_counter == 60)
+                frame_counter = 0;
             
             if (sprite-> frame > sprite->sprites)
                 sprite->frame = 0;
-            DrawTextureRec(sprite->sprite, rec, *pos, WHITE);
+            DrawTextureRec(sprite->txt, rec, *pos, WHITE);
         }
     }
 }

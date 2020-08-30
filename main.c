@@ -35,22 +35,19 @@ int main()
         .layer = 1,
     };
     
-    extern Body bodies[];
-    extern int bodiesCount;
-    extern int pairsCount;
-    bodies[0] = A;
-    bodies[1] = B;
-    bodiesCount = 2;
-    printf("contacts: %d\n", pairsCount);
+    extern int pairs_count;
+    AddBody(A);
+    AddBody(B);
+    printf("contacts: %d\n", pairs_count);
     GenerateContactPairs();
-    printf("contacts: %d\n", pairsCount);
+    printf("contacts: %d\n", pairs_count);
     
     
     return 0;
-    initGame(world);
+    InitGame(world);
     
-	createTerrain(world, WORLD_WIDTH, WORLD_HEIGHT, 1101);
-	createPlayer(world);
+	CreateTerrain(world, WORLD_WIDTH, WORLD_HEIGHT, 1101);
+	CreatePlayer(world);
     
 	while (!WindowShouldClose()) {
         ecs_run_systems(world, ECS_SYSTEM_UPDATE);
@@ -61,7 +58,7 @@ int main()
         
         ClearBackground(GetColor(0xB4D5F4));
         ecs_run_systems(world, ECS_SYSTEM_RENDER);
-        renderCollisions();
+        RenderCollisions();
         
         EndMode2D();
         
@@ -70,7 +67,7 @@ int main()
 		EndDrawing();
 	}
     
-	freeGame(world);
+	FreeGame(world);
     
 	return 0;
 }

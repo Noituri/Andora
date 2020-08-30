@@ -7,10 +7,6 @@
 #define max(a,b) a > b ? a : b
 #define pythagoreanSolve(a,b) sqrtf(a*a + b*b)
 
-void InitPhysics();
-void GenerateContactPairs();
-int AddBody(Body newBody);
-void RemoveBody(int i);
 
 typedef struct {
 	Vector2 min;
@@ -25,14 +21,14 @@ typedef struct {
 	Vector2 position;
 	Vector2 velocity;
     Vector2 force;
-    float staticFriction;
-    float dynamicFriction;
+    float static_friction;
+    float dynamic_friction;
     
 	float restitution;
     float density;
     
 	float mass;
-	float invMass;
+	float inv_mass;
 	
     int dynamic;
     
@@ -45,5 +41,10 @@ typedef struct {
 	float penetration;
 	Vector2 normal;
 } Manifold;
+
+void InitPhysics();
+int AddBody(Body newBody);
+void RemoveBody(int i);
+void GenerateContactPairs();
 
 #endif //ANDORA_PHYSICS_H

@@ -3,7 +3,7 @@
 
 #include "components.h"
 
-void registerSystems(Ecs *world);
+void RegisterSystems(Ecs *world);
 void renderTerrain(Ecs *world);
 void movePlayer(Ecs *world);
 void renderSprite(Ecs *world);

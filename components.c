@@ -3,9 +3,9 @@
 #include "components.h"
 #include "third_party/perlin.h"
 
-extern Texture2D playerTxt;
+extern Texture2D player_txt;
 
-void registerComponents(Ecs *world)
+void RegisterComponents(Ecs *world)
 {
     ecs_register_component(world, COMPONENT_TERRAIN, 1000, sizeof(CTerrain), NULL);
     ecs_register_component(world, COMPONENT_TRANSFORM, 1000, sizeof(CTransform), NULL);
@@ -14,7 +14,7 @@ void registerComponents(Ecs *world)
     //    ecs_register_component(world, COMPONENT_PHYSICS, 1000, sizeof(CPhysics), NULL);
 }
 
-void createTerrain(Ecs *world, int width, int height, int seed)
+void CreateTerrain(Ecs *world, int width, int height, int seed)
 {
     EcsEnt entity = ecs_ent_make(world);
     Vector2* blocks = malloc(width * height * sizeof(Vector2));
@@ -23,8 +23,7 @@ void createTerrain(Ecs *world, int width, int height, int seed)
     for (int x = 0; x < (width / 16); x++) {
         int maxY = (int)(Perlin_Get2d((double)x / 10, 0, 0.5, 4, seed) * 100);
         for (int y = maxY / 16; y < (height / 16); y++) {
-            blocks[i] = (Vector2) { (float) x * 16, (float) y * 16 };
-            i++;
+            blocks[i++] = (Vector2) { (float) x * 16, (float) y * 16 };
         }
     }
     
@@ -32,7 +31,7 @@ void createTerrain(Ecs *world, int width, int height, int seed)
     
     CTerrain terrain = {
         .blocks = blocks,
-        .blocksSize = i,
+        .blocks_size = i,
         .width = width,
         .height = height,
         .seed = seed
@@ -43,16 +42,16 @@ void createTerrain(Ecs *world, int width, int height, int seed)
     ecs_ent_add_component(world, entity, COMPONENT_TRANSFORM, &transform);
 }
 
-void createPlayer(Ecs *world)
+void CreatePlayer(Ecs *world)
 {
     EcsEnt entity = ecs_ent_make(world);
-    CPlayerState pState = PLAYER_IDLE;
+    CPlayerState p_state = PLAYER_IDLE;
     CTransform transform = { 720.0f, -150.0f };
     
     CSprite sprite = {
-        .sprite = playerTxt,
+        .txt = player_txt,
         .sprites = 9,
-        .width = playerTxt.width / 9,
+        .width = player_txt.width / 9,
         .height = 64 * 2,
         .frame = 0
     };
@@ -60,13 +59,13 @@ void createPlayer(Ecs *world)
     //    CPhysics body = CreatePhysicsBodyRectangle(transform, (float) playerTxt.width / 9, 64 * 2, 1);
     //    body->freezeOrient = true;
     
-    ecs_ent_add_component(world, entity, COMPONENT_PLAYER_STATE, &pState);
+    ecs_ent_add_component(world, entity, COMPONENT_PLAYER_STATE, &p_state);
     ecs_ent_add_component(world, entity, COMPONENT_TRANSFORM, &transform);
     ecs_ent_add_component(world, entity, COMPONENT_SPRITE, &sprite);
     //    ecs_ent_add_component(world, entity, COMPONENT_PHYSICS, &body);
 }
 
-void renderCollisions()
+void RenderCollisions()
 {
     //	int bodiesCount = GetPhysicsBodiesCount();
     //	for (int i = 0; i < bodiesCount; i++) {
