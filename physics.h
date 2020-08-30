@@ -6,6 +6,9 @@
 #define min(a,b) a > b ? b : a
 #define max(a,b) a > b ? a : b
 
+void InitPhysics();
+void GenerateContactPairs();
+
 typedef struct {
 	Vector2 min;
 	Vector2 max;

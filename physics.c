@@ -1,6 +1,7 @@
 #include "physics.h"
 #include "raymath.h"
 #include <time.h>
+#include <stdio.h>
 
 const float fps = 60;
 const float dt = 1 / 60;
@@ -129,14 +130,15 @@ void GenerateContactPairs()
 {
     AABB A_aabb;
     AABB B_aabb;
+    printf("BODIES COUNT: %d\n", bodiesCount);
     
     for (int i = 0; i < bodiesCount; i++) {
         Body *A = &bodies[i];
-        if (!A->dynamic)
-            continue;
         
         for (int j = i + 1; j < bodiesCount; j++) {
             Body *B = &bodies[j];
+            if (!A->dynamic && !B->dynamic)
+                continue;
             
             if (!(A->layer & B->layer))
                 continue;
@@ -148,7 +150,7 @@ void GenerateContactPairs()
                 .A = A,
                 .B = B
             };
-            
+            printf("TESTING AABBtoAABB\n");
             if (AABBvsAABB(&manifold)) {
                 collisionPairs[pairsCount++] = manifold;
             }
