@@ -5,9 +5,12 @@
 
 #define min(a,b) a > b ? b : a
 #define max(a,b) a > b ? a : b
+#define pythagoreanSolve(a,b) sqrtf(a*a + b*b)
 
 void InitPhysics();
 void GenerateContactPairs();
+int AddBody(Body newBody);
+void RemoveBody(int i);
 
 typedef struct {
 	Vector2 min;
@@ -16,11 +19,14 @@ typedef struct {
 
 typedef struct {
     int layer;
+    
     float width;
     float height;
 	Vector2 position;
 	Vector2 velocity;
     Vector2 force;
+    float staticFriction;
+    float dynamicFriction;
     
 	float restitution;
     float density;
