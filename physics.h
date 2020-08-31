@@ -43,8 +43,9 @@ typedef struct {
 } Manifold;
 
 void InitPhysics();
-int AddBody(Body newBody);
+int AddBody(Body *newBody);
 void RemoveBody(int i);
 void GenerateContactPairs();
+void PhysicsStep();
 
 #endif //ANDORA_PHYSICS_H

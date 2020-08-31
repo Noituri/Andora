@@ -10,7 +10,7 @@ float accumulator = 0.0f;
 time_t time_start;
 
 Manifold collision_pairs[1000];
-Body bodies[1000];
+Body *bodies[1000];
 int bodies_count, pairs_count = 0;
 
 void InitPhysics()
@@ -18,7 +18,7 @@ void InitPhysics()
     time_start = time(NULL);
 }
 
-int AddBody(Body new_body)
+int AddBody(Body *new_body)
 {
     int current_count = bodies_count;
     bodies[bodies_count++] = new_body;
@@ -31,7 +31,7 @@ void RemoveBody(int body_index)
     bodies_count--;
 }
 
-void positionalCorrection(Manifold *m)
+void PositionalCorrection(Manifold *m)
 {
     Body *A = m->A;
     Body *B = m->B;
@@ -144,13 +144,26 @@ void PhysicsStep()
         accumulator = 0.2f;
     
     while (accumulator > dt) {
+        GenerateContactPairs();
+        for (int i = 0; i < pairs_count; i++) {
+            ResolveCollision(&collision_pairs[i]);
+        }
+        
+        for (int i = 0; i < bodies_count; i++) {
+            bodies[i]->velocity.y += 0.005;
+        }
+        
+        for (int i = 0; i < pairs_count; i++) {
+            PositionalCorrection(&collision_pairs[i]);
+        }
+        
         accumulator -= dt;
     }
     
     const float alpha = accumulator / dt;
 }
 
-AABB calculateAABB(Body *b)
+AABB CalculateAABB(Body *b)
 {
     // TODO: Check this implementation
     AABB tmp = {
@@ -163,29 +176,30 @@ AABB calculateAABB(Body *b)
 
 void GenerateContactPairs()
 {
+    pairs_count = 0;
+    
     AABB A_aabb;
     AABB B_aabb;
-    printf("BODIES COUNT: %d\n", bodies_count);
     
     for (int i = 0; i < bodies_count; i++) {
-        Body *A = &bodies[i];
+        Body *A = bodies[i];
         
         for (int j = i + 1; j < bodies_count; j++) {
-            Body *B = &bodies[j];
+            Body *B = bodies[j];
             if (!A->dynamic && !B->dynamic)
                 continue;
             
             if (!(A->layer & B->layer))
                 continue;
             
-            A->aabb = calculateAABB(A);
-            B->aabb = calculateAABB(B);
+            A->aabb = CalculateAABB(A);
+            B->aabb = CalculateAABB(B);
             
             Manifold manifold = {
                 .A = A,
                 .B = B
             };
-            printf("TESTING AABBtoAABB\n");
+            
             if (AABBvsAABB(&manifold)) {
                 collision_pairs[pairs_count++] = manifold;
             }

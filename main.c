@@ -26,30 +26,26 @@ int main()
         .layer = 1,
     };
     
-    
     Body B = {
-        .position = (Vector2) { 0.0f, 31.0f },
+        .position = (Vector2) { 0.0f, 64.0f },
         .width = 32.0f,
         .height = 32.0f,
         .dynamic = true,
         .layer = 1,
     };
     
-    extern int pairs_count;
-    AddBody(A);
-    AddBody(B);
-    printf("contacts: %d\n", pairs_count);
-    GenerateContactPairs();
-    printf("contacts: %d\n", pairs_count);
+    printf("POS Y: %f\n", B.position.y);
+    AddBody(&A);
+    AddBody(&B);
     
-    
-    return 0;
     InitGame(world);
     
 	CreateTerrain(world, WORLD_WIDTH, WORLD_HEIGHT, 1101);
 	CreatePlayer(world);
     
 	while (!WindowShouldClose()) {
+        PhysicsStep();
+        printf("POS Y: %f\n", B.position.y);
         ecs_run_systems(world, ECS_SYSTEM_UPDATE);
         
 		BeginDrawing();
