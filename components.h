@@ -42,6 +42,5 @@ typedef struct {
 void RegisterComponents(Ecs *world);
 void CreateTerrain(Ecs *world, int width, int height, int seed);
 void CreatePlayer(Ecs *world);
-void RenderCollisions();
 
 #endif //ANDORA_COMPONENTS_H

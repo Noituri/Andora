@@ -38,3 +38,22 @@ void FreeGame(Ecs *world)
     UnloadTexture(player_txt);
     CloseWindow();
 }
+
+
+void RenderCollisions()
+{
+    //	int bodiesCount = GetPhysicsBodiesCount();
+    //	for (int i = 0; i < bodiesCount; i++) {
+    //		PhysicsBody body = GetPhysicsBody(i);
+    //
+    //		int vertexCount = GetPhysicsShapeVerticesCount(i);
+    //		for (int j = 0; j < vertexCount; j++) {
+    //			Vector2 vertexA = GetPhysicsShapeVertex(body, j);
+    //
+    //			int jj = (((j + 1) < vertexCount) ? (j + 1) : 0);
+    //			Vector2 vertexB = GetPhysicsShapeVertex(body, jj);
+    //
+    //			DrawLineV(vertexA, vertexB, RED);
+    //		}
+    //	}
+}

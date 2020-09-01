@@ -6,7 +6,7 @@
 
 const float fps = 60;
 const float dt = 1 / fps;
-const Vector2 gravity = { 0.0f, -25.0f };
+const Vector2 gravity = { 0.0f, -50.0f };
 float accumulator = 0.0f;
 time_t time_start;
 
@@ -61,16 +61,11 @@ void ResolveCollision(Manifold *m)
     
     float e = min(A->restitution, B->restitution);
     float j = -(e + 1) * vel_along_normal;
+    j /= A->inv_mass + B->inv_mass;
     
-    j /= 1 / A->mass + 1 / B->mass;
-    // TODO(noituri): impulse isn't working 
     Vector2 impulse = Vector2Scale(m->normal, j);
-    float mass_sum = A->mass + B->mass;
-    float ratio = A->mass / mass_sum;
-    A->velocity = Vector2Subtract(A->velocity, Vector2Scale(impulse, ratio));
-    
-    ratio = B->mass / mass_sum;
-    B->velocity = Vector2Add(B->velocity, Vector2Scale(impulse, ratio));
+    A->velocity = Vector2Subtract(A->velocity, Vector2Scale(impulse, A->inv_mass));
+    B->velocity = Vector2Add(B->velocity, Vector2Scale(impulse, B->inv_mass));
     
     relative_v = Vector2Subtract(B->velocity, A->velocity);
     Vector2 tmp_dot = Vector2Scale(m->normal, Vector2DotProduct(relative_v, m->normal));
@@ -96,18 +91,23 @@ void ResolveCollision(Manifold *m)
 
 int AABBvsAABB(Manifold *m)
 {
-    Vector2 normal = Vector2Subtract(m->B->position, m->A->position);
-    float a_extent = (m->A->aabb.max.x - m->A->aabb.min.x) / 2;
-    float b_extent = (m->B->aabb.max.x - m->B->aabb.min.x) / 2;
+    Body *A = m->A;
+    Body *B = m->B;
+    AABB A_aabb = A->aabb;
+    AABB B_aabb = B->aabb;
+    
+    Vector2 normal = Vector2Subtract(B->position, A->position);
+    float a_extent = (A_aabb.max.x - A_aabb.min.x) / 2;
+    float b_extent = (B_aabb.max.x - B_aabb.min.x) / 2;
     
     float x_overlap = a_extent + b_extent - fabsf(normal.x);
     if (x_overlap > 0) {
-        float a_extent = (m->A->aabb.max.y - m->A->aabb.min.y) / 2;
-        float b_extent = (m->B->aabb.max.y - m->B->aabb.min.y) / 2;
+        float a_extent = (A_aabb.max.y - A_aabb.min.y) / 2;
+        float b_extent = (B_aabb.max.y - B_aabb.min.y) / 2;
         
         float y_overlap = a_extent + b_extent - fabsf(normal.y);
         if (y_overlap > 0) {
-            if (x_overlap > y_overlap) {
+            if (x_overlap < y_overlap) {
                 if (normal.x < 0)
                     m->normal = (Vector2) {-1, 0};
                 else
