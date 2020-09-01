@@ -5,7 +5,8 @@
 #include <math.h>
 
 const float fps = 60;
-const float dt = 1 / 60;
+const float dt = 1 / fps;
+const Vector2 gravity = { 0.0f, -25.0f };
 float accumulator = 0.0f;
 time_t time_start;
 
@@ -18,17 +19,21 @@ void InitPhysics()
     time_start = time(NULL);
 }
 
-int AddBody(Body *new_body)
+int AddBody(Body *b)
 {
+    if (b->mass == 0)
+        b->inv_mass = 0;
+    else
+        b->inv_mass = 1 / b->mass;
+    
     int current_count = bodies_count;
-    bodies[bodies_count++] = new_body;
+    bodies[bodies_count++] = b;
     return current_count;
 }
 
 void RemoveBody(int body_index)
 {
-    bodies[body_index] = bodies[bodies_count-1];
-    bodies_count--;
+    bodies[body_index] = bodies[--bodies_count];
 }
 
 void PositionalCorrection(Manifold *m)
@@ -54,24 +59,13 @@ void ResolveCollision(Manifold *m)
     if (vel_along_normal > 0)
         return;
     
-    if(A->mass == 0)
-        A->inv_mass = 0;
-    else
-        A->inv_mass = 1 / A->mass;
-    
-    if(B->mass == 0)
-        B->inv_mass = 0;
-    else
-        B->inv_mass = 1 / B->mass;
-    
     float e = min(A->restitution, B->restitution);
     float j = -(e + 1) * vel_along_normal;
     
     j /= 1 / A->mass + 1 / B->mass;
-    
+    // TODO(noituri): impulse isn't working 
     Vector2 impulse = Vector2Scale(m->normal, j);
     float mass_sum = A->mass + B->mass;
-    
     float ratio = A->mass / mass_sum;
     A->velocity = Vector2Subtract(A->velocity, Vector2Scale(impulse, ratio));
     
@@ -134,6 +128,12 @@ int AABBvsAABB(Manifold *m)
     return 0;
 }
 
+void IntegrateForces(Body *b)
+{
+    Vector2 tmp = Vector2AddValue(gravity, b->inv_mass);
+    b->velocity = Vector2Add(b->velocity, Vector2Scale(tmp, dt / 2));
+}
+
 void PhysicsStep()
 {
     time_t current_time = time(NULL);
@@ -145,21 +145,24 @@ void PhysicsStep()
     
     while (accumulator > dt) {
         GenerateContactPairs();
-        for (int i = 0; i < pairs_count; i++) {
+        for (int i = 0; i < pairs_count; i++)
             ResolveCollision(&collision_pairs[i]);
-        }
         
         for (int i = 0; i < bodies_count; i++) {
-            bodies[i]->velocity.y += 0.005;
+            Body *b = bodies[i];
+            if (!b->dynamic)
+                continue;
+            //if (b->velocity.y > 0.0f)
+            //printf("V: %f\n", b->velocity.y);
+            b->position = Vector2Add(b->position, Vector2Scale(b->velocity, dt));
+            IntegrateForces(b);
         }
         
-        for (int i = 0; i < pairs_count; i++) {
+        for (int i = 0; i < pairs_count; i++)
             PositionalCorrection(&collision_pairs[i]);
-        }
         
         accumulator -= dt;
     }
-    
     const float alpha = accumulator / dt;
 }
 

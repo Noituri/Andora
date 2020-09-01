@@ -31,6 +31,7 @@ int main()
         .width = 32.0f,
         .height = 32.0f,
         .dynamic = true,
+        .mass = 5.0,
         .layer = 1,
     };
     
