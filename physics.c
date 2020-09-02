@@ -134,36 +134,42 @@ void IntegrateForces(Body *b)
     b->velocity = Vector2Add(b->velocity, Vector2Scale(tmp, dt / 2));
 }
 
+void IntegrateVelocity(Body *b)
+{
+    if (!b->dynamic)
+        return;
+    
+    b->position = Vector2Add(b->position, Vector2Scale(b->velocity, dt));
+    IntegrateForces(b);
+}
+
 void PhysicsStep()
 {
+    accumulator = 0.0f;
+    // TODO(noituri): Fix accumulator
     time_t current_time = time(NULL);
     accumulator += current_time - time_start;
     time_start = current_time;
-    
     if (accumulator > 0.2f)
         accumulator = 0.2f;
-    
-    while (accumulator > dt) {
+    int a = 1;
+    while (/*accumulator > dt*/a) {
+        a = 0;
         GenerateContactPairs();
+        for (int i = 0; i < bodies_count; i++)
+            IntegrateVelocity(bodies[i]);
+        
         for (int i = 0; i < pairs_count; i++)
             ResolveCollision(&collision_pairs[i]);
         
-        for (int i = 0; i < bodies_count; i++) {
-            Body *b = bodies[i];
-            if (!b->dynamic)
-                continue;
-            //if (b->velocity.y > 0.0f)
-            //printf("V: %f\n", b->velocity.y);
-            b->position = Vector2Add(b->position, Vector2Scale(b->velocity, dt));
-            IntegrateForces(b);
-        }
+        for (int i = 0; i < bodies_count; i++)
+            IntegrateVelocity(bodies[i]);
         
         for (int i = 0; i < pairs_count; i++)
             PositionalCorrection(&collision_pairs[i]);
         
-        accumulator -= dt;
+        accumulator -= dt * 2;
     }
-    const float alpha = accumulator / dt;
 }
 
 AABB CalculateAABB(Body *b)

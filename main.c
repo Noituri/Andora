@@ -30,7 +30,7 @@ int main()
     };
     
     Body B = {
-        .position = (Vector2) { 0.0f, 45.0f },
+        .position = (Vector2) { 0.0f, 200.0f },
         .width = 32.0f,
         .height = 32.0f,
         .dynamic = true,
@@ -53,6 +53,9 @@ int main()
         PhysicsStep();
         //printf("POS Y: %f\n", B.position.y);
         //ecs_run_systems(world, ECS_SYSTEM_UPDATE);
+        
+        if (IsKeyDown(KEY_R))
+            B.position.y = 200;
         
 		BeginDrawing();
         
