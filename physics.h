@@ -7,6 +7,13 @@
 #define max(a,b) a > b ? a : b
 #define pythagoreanSolve(a,b) sqrtf(a*a + b*b)
 
+#ifdef WIN32
+// Not tested
+typedef LARGE_INTEGER Clock;
+#else
+typedef struct timespec Clock;
+#endif
+
 
 typedef struct {
 	Vector2 min;

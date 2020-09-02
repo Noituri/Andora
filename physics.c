@@ -1,22 +1,41 @@
+// TODO(noituri): CLEAN UP
+
 #include "physics.h"
 #include "raymath.h"
-#include <time.h>
 #include <stdio.h>
 #include <math.h>
 
+#ifdef WIN32
+#include <Windows.h>
+LARGE_INTEGER cpu_freq;
+#else
+#include <time.h>
+#endif
+
 const float fps = 60;
 const float dt = 1 / fps;
-const Vector2 gravity = { 0.0f, -50.0f };
-float accumulator = 0.0f;
-time_t time_start;
+const Vector2 gravity = { 0.0f, -5.0f };
+Clock time_start;
 
 Manifold collision_pairs[1000];
 Body *bodies[1000];
 int bodies_count, pairs_count = 0;
 
+void GetPhysicsTime(Clock *t)
+{
+#ifdef WIN32
+    QueryPerformanceCounter(t);
+#else
+    clock_gettime(CLOCK_MONOTONIC, t);
+#endif
+}
+
 void InitPhysics()
 {
-    time_start = time(NULL);
+    GetPhysicsTime(&time_start);
+#ifdef WIN32
+    QueryPerformanceFrequency(&cpu_freq);
+#endif
 }
 
 int AddBody(Body *b)
@@ -69,7 +88,11 @@ void ResolveCollision(Manifold *m)
     
     relative_v = Vector2Subtract(B->velocity, A->velocity);
     Vector2 tmp_dot = Vector2Scale(m->normal, Vector2DotProduct(relative_v, m->normal));
+    
+    
     Vector2 tangent = Vector2Subtract(relative_v, tmp_dot);
+    if (!Vector2Length(tangent))
+        return;
     tangent = Vector2Normalize(tangent);
     
     float jt = -Vector2DotProduct(relative_v, tangent);
@@ -82,6 +105,7 @@ void ResolveCollision(Manifold *m)
         friction_impulse = Vector2Scale(tangent, jt);
     } else {
         float dynamic_friction = pythagoreanSolve(A->dynamic_friction, B->dynamic_friction);
+        
         friction_impulse = Vector2Scale(tangent, -j * dynamic_friction);
     }
     
@@ -130,7 +154,8 @@ int AABBvsAABB(Manifold *m)
 
 void IntegrateForces(Body *b)
 {
-    Vector2 tmp = Vector2AddValue(gravity, b->inv_mass);
+    Vector2 tmp = gravity;
+    tmp.y += b->inv_mass;
     b->velocity = Vector2Add(b->velocity, Vector2Scale(tmp, dt / 2));
 }
 
@@ -143,18 +168,24 @@ void IntegrateVelocity(Body *b)
     IntegrateForces(b);
 }
 
+float TimeElapsed()
+{
+    Clock current;
+    GetPhysicsTime(&current);
+#ifdef WIN32
+    return (current.QuadPart - time_start.QuadPart) / (float) cpu_freq.QuadPart;
+#else
+    return (current.tv_sec - time_start.tv_sec) * 1e6 + (current.tv_nsec - time_start.tv_nsec) / 1e3;
+#endif
+}
+
 void PhysicsStep()
 {
-    accumulator = 0.0f;
-    // TODO(noituri): Fix accumulator
-    time_t current_time = time(NULL);
-    accumulator += current_time - time_start;
-    time_start = current_time;
+    float accumulator = TimeElapsed();
     if (accumulator > 0.2f)
         accumulator = 0.2f;
-    int a = 1;
-    while (/*accumulator > dt*/a) {
-        a = 0;
+    
+    while (accumulator > dt) {
         GenerateContactPairs();
         for (int i = 0; i < bodies_count; i++)
             IntegrateVelocity(bodies[i]);
