@@ -3,17 +3,9 @@
 
 #include "raylib.h"
 
-#define min(a,b) a > b ? b : a
-#define max(a,b) a > b ? a : b
-#define pythagoreanSolve(a,b) sqrtf(a*a + b*b)
-
-#ifdef WIN32
-// Not tested
-typedef LARGE_INTEGER Clock;
-#else
-typedef struct timespec Clock;
-#endif
-
+#define MIN(a,b) a > b ? b : a
+#define MAX(a,b) a > b ? a : b
+#define P_SOLVE(a,b) sqrtf(a*a + b*b)
 
 typedef struct {
 	Vector2 min;
@@ -52,6 +44,8 @@ typedef struct {
 void InitPhysics();
 int AddBody(Body *newBody);
 void RemoveBody(int i);
+void FreePhysics();
+Body *CreateBody(Vector2 p, float w, float h);
 void GenerateContactPairs();
 void PhysicsStep();
 

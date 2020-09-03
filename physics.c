@@ -1,41 +1,22 @@
-// TODO(noituri): CLEAN UP
-
 #include "physics.h"
-#include "raymath.h"
+#include "timer.h"
+
+#include <raymath.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-#ifdef WIN32
-#include <Windows.h>
-LARGE_INTEGER cpu_freq;
-#else
-#include <time.h>
-#endif
 
 const float fps = 60;
 const float dt = 1 / fps;
 const Vector2 gravity = { 0.0f, -5.0f };
-Clock time_start;
 
 Manifold collision_pairs[1000];
 Body *bodies[1000];
 int bodies_count, pairs_count = 0;
 
-void GetPhysicsTime(Clock *t)
-{
-#ifdef WIN32
-    QueryPerformanceCounter(t);
-#else
-    clock_gettime(CLOCK_MONOTONIC, t);
-#endif
-}
-
 void InitPhysics()
 {
-    GetPhysicsTime(&time_start);
-#ifdef WIN32
-    QueryPerformanceFrequency(&cpu_freq);
-#endif
+    InitTimer();
 }
 
 int AddBody(Body *b)
@@ -50,9 +31,37 @@ int AddBody(Body *b)
     return current_count;
 }
 
+Body *CreateBody(Vector2 pos, float width, float height)
+{
+    Body *b = malloc(sizeof(Body));
+    
+    b->position = pos;
+    b->width = width;
+    b->height = height;
+    b->mass = 5.0;
+    b->layer = 1;
+    b->restitution = 0.2f;
+    b->dynamic_friction = 0.2f;
+    b->static_friction = 0.4f;
+    
+    AddBody(b);
+    
+    return b;
+}
+
 void RemoveBody(int body_index)
 {
+    free(bodies[body_index]);
     bodies[body_index] = bodies[--bodies_count];
+}
+
+void FreePhysics()
+{
+    for (int i = 0; i < bodies_count; i++) {
+        free(bodies[i]);
+    }
+    
+    bodies_count = 0;
 }
 
 void PositionalCorrection(Manifold *m)
@@ -62,7 +71,7 @@ void PositionalCorrection(Manifold *m)
     
     const float percent = 0.2f;
     const float slop = 0.01f;
-    float tmp = (max(m->penetration - slop, 0.0f) / (A->inv_mass + B->inv_mass)) * percent;
+    float tmp = (MAX(m->penetration - slop, 0.0f) / (A->inv_mass + B->inv_mass)) * percent;
     Vector2 correction = Vector2Scale(m->normal, tmp);
     A->position = Vector2Subtract(A->position, Vector2Scale(correction, A->inv_mass));
     B->position = Vector2Add(B->position, Vector2Scale(correction, B->inv_mass));
@@ -78,7 +87,7 @@ void ResolveCollision(Manifold *m)
     if (vel_along_normal > 0)
         return;
     
-    float e = min(A->restitution, B->restitution);
+    float e = MIN(A->restitution, B->restitution);
     float j = -(e + 1) * vel_along_normal;
     j /= A->inv_mass + B->inv_mass;
     
@@ -98,13 +107,13 @@ void ResolveCollision(Manifold *m)
     float jt = -Vector2DotProduct(relative_v, tangent);
     jt /= A->inv_mass + B->inv_mass;
     
-    float mu = pythagoreanSolve(A->static_friction, B->static_friction);
+    float mu = P_SOLVE(A->static_friction, B->static_friction);
     
     Vector2 friction_impulse = {};
     if (fabsf(jt) < j * mu) {
         friction_impulse = Vector2Scale(tangent, jt);
     } else {
-        float dynamic_friction = pythagoreanSolve(A->dynamic_friction, B->dynamic_friction);
+        float dynamic_friction = P_SOLVE(A->dynamic_friction, B->dynamic_friction);
         
         friction_impulse = Vector2Scale(tangent, -j * dynamic_friction);
     }
@@ -168,20 +177,9 @@ void IntegrateVelocity(Body *b)
     IntegrateForces(b);
 }
 
-float TimeElapsed()
-{
-    Clock current;
-    GetPhysicsTime(&current);
-#ifdef WIN32
-    return (current.QuadPart - time_start.QuadPart) / (float) cpu_freq.QuadPart;
-#else
-    return (current.tv_sec - time_start.tv_sec) * 1e6 + (current.tv_nsec - time_start.tv_nsec) / 1e3;
-#endif
-}
-
 void PhysicsStep()
 {
-    float accumulator = TimeElapsed();
+    float accumulator = ClockTimeElapsed();
     if (accumulator > 0.2f)
         accumulator = 0.2f;
     

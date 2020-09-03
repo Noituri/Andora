@@ -1,4 +1,7 @@
 #include "utils.h"
+#include "physics.h"
+
+#include <stdio.h>
 #include <raylib.h>
 
 Texture2D dirt_txt;
@@ -33,10 +36,12 @@ void InitGame(Ecs *world)
 
 void FreeGame(Ecs *world)
 {
-    ecs_destroy(world);
+    FreePhysics();
     UnloadTexture(dirt_txt);
     UnloadTexture(player_txt);
+    ecs_destroy(world);
     CloseWindow();
+    printf("Game has been freed\n");
 }
 
 
