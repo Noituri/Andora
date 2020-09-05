@@ -31,19 +31,20 @@ int AddBody(Body *b)
     return current_count;
 }
 
-Body *CreateBody(Vector2 pos, float width, float height)
+Body *CreateBody(Vector2 pos, float width, float height, float mass)
 {
     Body *b = malloc(sizeof(Body));
-    
     b->position = pos;
     b->width = width;
     b->height = height;
-    b->mass = 5.0f;
+    b->mass = mass;
     b->layer = 1;
-    b->restitution = 0.0f;
+    b->restitution = 0.2f;
     b->dynamic_friction = 0.2f;
     b->static_friction = 0.4f;
-    
+    b->dynamic = 0;
+    b->velocity = Vector2Zero();
+
     AddBody(b);
     
     return b;
@@ -53,6 +54,12 @@ void RemoveBody(int body_index)
 {
     free(bodies[body_index]);
     bodies[body_index] = bodies[--bodies_count];
+}
+
+Body **GetBodies(int* amount)
+{
+	*amount = bodies_count;
+	return bodies;
 }
 
 void FreePhysics()
@@ -90,14 +97,13 @@ void ResolveCollision(Manifold *m)
     float e = MIN(A->restitution, B->restitution);
     float j = -(e + 1) * vel_along_normal;
     j /= A->inv_mass + B->inv_mass;
-    
+
     Vector2 impulse = Vector2Scale(m->normal, j);
     A->velocity = Vector2Subtract(A->velocity, Vector2Scale(impulse, A->inv_mass));
     B->velocity = Vector2Add(B->velocity, Vector2Scale(impulse, B->inv_mass));
-    
+
     relative_v = Vector2Subtract(B->velocity, A->velocity);
     Vector2 tmp_dot = Vector2Scale(m->normal, Vector2DotProduct(relative_v, m->normal));
-    
     
     Vector2 tangent = Vector2Subtract(relative_v, tmp_dot);
     if (!Vector2Length(tangent))
@@ -172,7 +178,7 @@ void IntegrateVelocity(Body *b)
 {
     if (!b->dynamic)
         return;
-    
+
     b->position = Vector2Add(b->position, Vector2Scale(b->velocity, dt));
     IntegrateForces(b);
 }
@@ -187,16 +193,16 @@ void PhysicsStep()
         GenerateContactPairs();
         for (int i = 0; i < bodies_count; i++)
             IntegrateVelocity(bodies[i]);
-        
+
         for (int i = 0; i < pairs_count; i++)
             ResolveCollision(&collision_pairs[i]);
-        
+
         for (int i = 0; i < bodies_count; i++)
             IntegrateVelocity(bodies[i]);
         
         for (int i = 0; i < pairs_count; i++)
             PositionalCorrection(&collision_pairs[i]);
-        
+
         accumulator -= dt * 2;
     }
 }

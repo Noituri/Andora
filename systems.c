@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <raymath.h>
 #include "systems.h"
 #include "utils.h"
 
@@ -15,11 +17,15 @@ void RegisterSystems(Ecs *world)
     ecs_register_system(world, renderSprite, ECS_SYSTEM_RENDER);
 }
 
+// FIXME remove this test/experiment
+
+int did_once = 0;
+
 #define RENDER_TERRAIN_SYSTEM_MASK \
 ECS_MASK(2, COMPONENT_TERRAIN, COMPONENT_TRANSFORM)
 void renderTerrain(Ecs *world)
 {
-    for (uint32_t i = 0; i < ecs_for_count(world); i++) {
+	for (uint32_t i = 0; i < ecs_for_count(world); i++) {
         EcsEnt entity = ecs_get_ent(world, i);
         if (ecs_ent_has_mask(world, entity, RENDER_TERRAIN_SYSTEM_MASK)) {
             CTerrain *terrain = ecs_ent_get_component(world, entity, COMPONENT_TERRAIN);
@@ -29,14 +35,49 @@ void renderTerrain(Ecs *world)
             float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
             float bottom_offset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
             float top_offset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
-            
             for (int j = 0; j < terrain->blocks_size; j++) {
                 Vector2 tmp_block = terrain->blocks[j];
                 if (tmp_block.x > right_offset || tmp_block.x < left_offset || tmp_block.y > bottom_offset || tmp_block.y < top_offset)
                     continue;
-                
                 DrawTextureRec(dirt_txt, (Rectangle) {40, 100, 16, 16}, tmp_block, WHITE);
-            }
+
+				if (!did_once) {
+					int l = 0, r = 0, t = 0, b = 0;
+					for (int k = 0; k < terrain->blocks_size; k++) {
+						Vector2 tmp = terrain->blocks[k];
+						// BOTTOM
+						if ((int)tmp_block.y + 16 == (int)tmp.y && (int)tmp_block.x == (int)tmp.x) {
+							b = 1;
+							continue;
+						}
+
+						// TOP
+						if ((int)tmp_block.y - 16 == (int)tmp.y && (int)tmp_block.x == (int)tmp.x) {
+							t = 1;
+							continue;
+						}
+
+						// RIGHT
+						if ((int)tmp_block.x + 16 == (int)tmp.x && (int)tmp_block.y == (int)tmp.y) {
+							r = 1;
+							continue;
+						}
+
+						// LEFT
+						if ((int)tmp_block.x - 16 == (int)tmp.x && (int)tmp_block.y == (int)tmp.y) {
+							l = 1;
+							continue;
+						}
+						if (t && r && b && l) {
+							break;
+						}
+					}
+
+					if (!(t && r && b && l))
+						CreateBody(tmp_block, 16, 16, 0.0f);
+				}
+			}
+			did_once = 1;
 		}
     }
 }

@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "third_party/ecs.h"
+#include "physics.h"
 
 typedef enum {
     COMPONENT_TRANSFORM,

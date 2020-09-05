@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <raylib.h>
+#include <stdlib.h>
 
 Texture2D dirt_txt;
 Texture2D player_txt;
@@ -25,7 +26,7 @@ void InitGame(Ecs *world)
     camera = (Camera2D) {
         .offset = (Vector2) { (float) SCREEN_WIDTH / 2, (float) SCREEN_HEIGHT / 2 },
         .rotation = 0.0f,
-        .target = (Vector2) { 720.0f, 100.0f },
+        .target = (Vector2) { 500.0f, 260.0f },
         .zoom = 1.0f
     };
     
@@ -47,18 +48,10 @@ void FreeGame(Ecs *world)
 
 void RenderCollisions()
 {
-    //	int bodiesCount = GetPhysicsBodiesCount();
-    //	for (int i = 0; i < bodiesCount; i++) {
-    //		PhysicsBody body = GetPhysicsBody(i);
-    //
-    //		int vertexCount = GetPhysicsShapeVerticesCount(i);
-    //		for (int j = 0; j < vertexCount; j++) {
-    //			Vector2 vertexA = GetPhysicsShapeVertex(body, j);
-    //
-    //			int jj = (((j + 1) < vertexCount) ? (j + 1) : 0);
-    //			Vector2 vertexB = GetPhysicsShapeVertex(body, jj);
-    //
-    //			DrawLineV(vertexA, vertexB, RED);
-    //		}
-    //	}
+	int bodies_amount = 0;
+	Body **bodies = GetBodies(&bodies_amount);
+	for (int i = 0; i < bodies_amount; i++) {
+		Body *body = bodies[i];
+		DrawRectangle(body->position.x, body->position.y, body->width, body->height, RED);
+	}
 }

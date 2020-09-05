@@ -19,13 +19,11 @@ typedef struct {
     float height;
 	Vector2 position;
 	Vector2 velocity;
-    Vector2 force;
+
     float static_friction;
     float dynamic_friction;
-    
 	float restitution;
-    float density;
-    
+
 	float mass;
 	float inv_mass;
 	
@@ -44,8 +42,9 @@ typedef struct {
 void InitPhysics();
 int AddBody(Body *newBody);
 void RemoveBody(int i);
+Body **GetBodies(int* amount);
 void FreePhysics();
-Body *CreateBody(Vector2 p, float w, float h);
+Body *CreateBody(Vector2 p, float w, float h, float m);
 void GenerateContactPairs();
 void PhysicsStep();
 
