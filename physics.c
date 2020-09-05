@@ -8,7 +8,7 @@
 
 const float fps = 60;
 const float dt = 1 / fps;
-const Vector2 gravity = { 0.0f, -5.0f };
+const Vector2 gravity = { 0.0f, 9.0f };
 
 Manifold collision_pairs[1000];
 Body *bodies[1000];
@@ -38,9 +38,9 @@ Body *CreateBody(Vector2 pos, float width, float height)
     b->position = pos;
     b->width = width;
     b->height = height;
-    b->mass = 5.0;
+    b->mass = 5.0f;
     b->layer = 1;
-    b->restitution = 0.2f;
+    b->restitution = 0.0f;
     b->dynamic_friction = 0.2f;
     b->static_friction = 0.4f;
     
@@ -135,8 +135,8 @@ int AABBvsAABB(Manifold *m)
     
     float x_overlap = a_extent + b_extent - fabsf(normal.x);
     if (x_overlap > 0) {
-        float a_extent = (A_aabb.max.y - A_aabb.min.y) / 2;
-        float b_extent = (B_aabb.max.y - B_aabb.min.y) / 2;
+        a_extent = (A_aabb.max.y - A_aabb.min.y) / 2;
+        b_extent = (B_aabb.max.y - B_aabb.min.y) / 2;
         
         float y_overlap = a_extent + b_extent - fabsf(normal.y);
         if (y_overlap > 0) {
@@ -144,7 +144,7 @@ int AABBvsAABB(Manifold *m)
                 if (normal.x < 0)
                     m->normal = (Vector2) {-1, 0};
                 else
-                    m->normal = Vector2Zero();
+                    m->normal = (Vector2) {1, 0};
                 m->penetration = x_overlap;
             } else {
                 if (normal.y < 0)
