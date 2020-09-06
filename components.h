@@ -5,6 +5,9 @@
 #include "third_party/ecs.h"
 #include "physics.h"
 
+#define CHUNK_WIDTH 16
+#define CHUNK_HEIGHT 3000
+
 typedef enum {
     COMPONENT_TRANSFORM,
     COMPONENT_SPRITE,
@@ -31,8 +34,14 @@ typedef enum {
 } CPlayerState;
 
 typedef struct {
-    Vector2 *blocks;
-    int blocks_size;
+	Vector2 *blocks;
+	int blocks_size;
+	int pos_x;
+} Chunk;
+
+typedef struct {
+    Chunk *chunks;
+    int chunks_size;
     int width;
     int height;
     int seed;

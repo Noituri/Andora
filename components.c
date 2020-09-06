@@ -17,21 +17,33 @@ void RegisterComponents(Ecs *world)
 void CreateTerrain(Ecs *world, int width, int height, int seed)
 {
     EcsEnt entity = ecs_ent_make(world);
-    Vector2* blocks = malloc(width * height * sizeof(Vector2));
+    Chunk *chunks = (Chunk *) malloc(1000 * sizeof(Chunk));
     
-    int i = 0;
-    for (int x = 0; x < (width / 16); x++) {
-        int maxY = (int)(Perlin_Get2d((double)x / 10, 0, 0.5, 4, seed) * 100);
-        for (int y = maxY / 16; y < (height / 16); y++) {
-            blocks[i++] = (Vector2) { (float) x * 16, (float) y * 16 };
-        }
+    int chunks_size = 0;
+	Chunk *chunk = &chunks[chunks_size];
+	for (int x = 0; x < (width / 16); x++) {
+		if (x % 16 == 0) {
+			chunk = &chunks[chunks_size];
+			chunks_size++;
+			chunk->blocks_size = 0;
+			chunk->blocks = malloc(CHUNK_WIDTH * CHUNK_HEIGHT * sizeof(Vector2));
+			chunk->pos_x = x;
+		}
+		int maxY = (int)(Perlin_Get2d((double)x / 10, 0, 0.5, 4, seed) * 100);
+		for (int y = maxY / 16; y < (height / 16); y++) {
+			chunk->blocks[chunk->blocks_size++] = (Vector2) { (float) x * 16, (float) y * 16 };
+		}
     }
-    
-    printf("Generated %d blocks\n", i);
-    
+	for (int i = 0; i < chunks_size; i++) {
+		Chunk tmp_c = chunks[i];
+		Chunk c = tmp_c;
+	}
+    printf("Generated %d chunks\n", chunks_size);
+
+    // TODO(noituri): Load only visible chunks to memory, the other chunks should be saved on the disk and freed from memory
     CTerrain terrain = {
-        .blocks = blocks,
-        .blocks_size = i,
+        .chunks = chunks,
+        .chunks_size = chunks_size,
         .width = width,
         .height = height,
         .seed = seed
