@@ -55,3 +55,40 @@ void RenderCollisions()
 		DrawRectangleLines(body->position.x, body->position.y, body->width, body->height, RED);
 	}
 }
+
+void CreateCollisionsForBlock(Chunk chunk, Vector2 block)
+{
+	int l = 0, r = 0, t = 0, b = 0;
+	for (int current_block = 0; current_block < chunk.blocks_size; current_block++) {
+		Vector2 tmp = chunk.blocks[current_block];
+		// BOTTOM
+		if ((int)block.y + 16 == (int)tmp.y && (int)block.x == (int)tmp.x) {
+			b = 1;
+			continue;
+		}
+
+		// TOP
+		if ((int)block.y - 16 == (int)tmp.y && (int)block.x == (int)tmp.x) {
+			t = 1;
+			continue;
+		}
+
+		// RIGHT
+		if ((int)block.x + 16 == (int)tmp.x && (int)block.y == (int)tmp.y) {
+			r = 1;
+			continue;
+		}
+
+		// LEFT
+		if ((int)block.x - 16 == (int)tmp.x && (int)block.y == (int)tmp.y) {
+			l = 1;
+			continue;
+		}
+		if (t && r && b && l) {
+			break;
+		}
+	}
+
+	if (!(t && r && b && l))
+		CreateBody(block, 16, 16, 0.0f);
+}

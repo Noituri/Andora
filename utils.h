@@ -10,5 +10,6 @@
 void InitGame(Ecs *world);
 void FreeGame(Ecs *world);
 void RenderCollisions();
+void CreateCollisionsForBlock(Chunk chunk, Vector2 block);
 
 #endif //ANDORA_UTILS_H

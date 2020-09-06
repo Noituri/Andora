@@ -35,7 +35,6 @@ void renderTerrain(Ecs *world)
             float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 16.0f * 16;
             float bottom_offset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
             float top_offset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
-            // TODO(noituri): Move parts of this code into separate functions
             for (int j = 0; j < terrain->chunks_size; j++) {
                 Chunk tmp_chunk = terrain->chunks[j];
                 if (tmp_chunk.pos_x > right_offset || tmp_chunk.pos_x < left_offset)
@@ -47,41 +46,8 @@ void renderTerrain(Ecs *world)
 						continue;
 					DrawTextureRec(dirt_txt, (Rectangle) {40, 100, 16, 16}, tmp_block, WHITE);
 
-					if (!did_once) {
-						int l = 0, r = 0, t = 0, b = 0;
-						for (int current_block = 0; current_block < tmp_chunk.blocks_size; current_block++) {
-							Vector2 tmp = tmp_chunk.blocks[current_block];
-							// BOTTOM
-							if ((int)tmp_block.y + 16 == (int)tmp.y && (int)tmp_block.x == (int)tmp.x) {
-								b = 1;
-								continue;
-							}
-
-							// TOP
-							if ((int)tmp_block.y - 16 == (int)tmp.y && (int)tmp_block.x == (int)tmp.x) {
-								t = 1;
-								continue;
-							}
-
-							// RIGHT
-							if ((int)tmp_block.x + 16 == (int)tmp.x && (int)tmp_block.y == (int)tmp.y) {
-								r = 1;
-								continue;
-							}
-
-							// LEFT
-							if ((int)tmp_block.x - 16 == (int)tmp.x && (int)tmp_block.y == (int)tmp.y) {
-								l = 1;
-								continue;
-							}
-							if (t && r && b && l) {
-								break;
-							}
-						}
-
-						if (!(t && r && b && l))
-							CreateBody(tmp_block, 16, 16, 0.0f);
-					}
+					if (!did_once)
+						CreateCollisionsForBlock(tmp_chunk, tmp_block);
 				}
 			}
 			did_once = 1;
