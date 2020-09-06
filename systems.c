@@ -35,6 +35,7 @@ void renderTerrain(Ecs *world)
             float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
             float bottom_offset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
             float top_offset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
+            // TODO(noituri): Move parts of this code into separate functions
             for (int j = 0; j < terrain->chunks_size; j++) {
                 Chunk tmp_chunk = terrain->chunks[j];
                 if (tmp_chunk.pos_x > right_offset || tmp_chunk.pos_x < left_offset)

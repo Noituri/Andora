@@ -52,6 +52,6 @@ void RenderCollisions()
 	Body **bodies = GetBodies(&bodies_amount);
 	for (int i = 0; i < bodies_amount; i++) {
 		Body *body = bodies[i];
-		DrawRectangle(body->position.x, body->position.y, body->width, body->height, RED);
+		DrawRectangleLines(body->position.x, body->position.y, body->width, body->height, RED);
 	}
 }
