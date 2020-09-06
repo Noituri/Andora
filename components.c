@@ -27,7 +27,7 @@ void CreateTerrain(Ecs *world, int width, int height, int seed)
 			chunks_size++;
 			chunk->blocks_size = 0;
 			chunk->blocks = malloc(CHUNK_WIDTH * CHUNK_HEIGHT * sizeof(Vector2));
-			chunk->pos_x = x;
+			chunk->pos_x = x * 16;
 		}
 		int maxY = (int)(Perlin_Get2d((double)x / 10, 0, 0.5, 4, seed) * 100);
 		for (int y = maxY / 16; y < (height / 16); y++) {

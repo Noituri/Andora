@@ -32,7 +32,7 @@ void renderTerrain(Ecs *world)
             Vector2 pos = camera.target;
             
             float right_offset = (pos.x + (float) SCREEN_WIDTH / 2.0f) + 40.0f;
-            float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 40.0f;
+            float left_offset = (pos.x - (float) SCREEN_WIDTH / 2.0f) - 16.0f * 16;
             float bottom_offset = (pos.y + (float) SCREEN_HEIGHT / 2.0f) + 40.0f;
             float top_offset = (pos.y - (float) SCREEN_HEIGHT / 2.0f) - 40.0f;
             // TODO(noituri): Move parts of this code into separate functions
@@ -43,7 +43,7 @@ void renderTerrain(Ecs *world)
                 for (int k = 0; k < tmp_chunk.blocks_size; k++) {
 					Vector2 tmp_block = tmp_chunk.blocks[k];
 
-					if (tmp_block.x > right_offset || tmp_block.x < left_offset || tmp_block.y > bottom_offset || tmp_block.y < top_offset)
+					if (tmp_block.y > bottom_offset || tmp_block.y < top_offset)
 						continue;
 					DrawTextureRec(dirt_txt, (Rectangle) {40, 100, 16, 16}, tmp_block, WHITE);
 

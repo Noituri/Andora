@@ -33,17 +33,26 @@ int main()
         //printf("POS Y: %f\n", TestBody.position.y);
 //        ecs_run_systems(world, ECS_SYSTEM_UPDATE);
 
-        if (IsKeyDown(KEY_R)) {
-			TestBody->position.x = 0;
-			TestBody->position.y = -200;
-			TestBody->velocity = (Vector2) {0.0f, 0.0f};
-		}
+//        if (IsKeyDown(KEY_R)) {
+//			TestBody->position.x = 0;
+//			TestBody->position.y = -200;
+//			TestBody->velocity = (Vector2) {0.0f, 0.0f};
+//		}
+//		if (IsKeyDown(KEY_A))
+//			TestBody->velocity.x -= 1;
+//		if (IsKeyDown(KEY_D))
+//			TestBody->velocity.x += 1;
+//		if (IsKeyDown(KEY_W))
+//			TestBody->velocity.y -= 2;
+
 		if (IsKeyDown(KEY_A))
-			TestBody->velocity.x -= 1;
+			camera.target.x -= 20;
 		if (IsKeyDown(KEY_D))
-			TestBody->velocity.x += 1;
+			camera.target.x += 20;
 		if (IsKeyDown(KEY_W))
-			TestBody->velocity.y -= 2;
+			camera.target.y -= 20;
+		if (IsKeyDown(KEY_S))
+			camera.target.y += 20;
 
 		BeginDrawing();
         

@@ -26,7 +26,7 @@ void InitGame(Ecs *world)
     camera = (Camera2D) {
         .offset = (Vector2) { (float) SCREEN_WIDTH / 2, (float) SCREEN_HEIGHT / 2 },
         .rotation = 0.0f,
-        .target = (Vector2) { 500.0f, 260.0f },
+        .target = (Vector2) { 1000.0f, 200.0f },
         .zoom = 1.0f
     };
     
