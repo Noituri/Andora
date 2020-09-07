@@ -31,6 +31,12 @@ config("raylib") {
     }
 }
 
+config("entt") {
+    include_dirs = [
+        "//third_party/entt/single_include/entt",
+    ]
+}
+
 if (is_win) {
     copy("raylibdll") {
         sources = [ "//third_party/raylib/bin/raylib.dll" ]
@@ -46,5 +52,6 @@ executable("andora") {
 
     configs += [
         ":raylib",
+        ":entt"
     ]
 }
