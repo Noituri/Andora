@@ -7,11 +7,10 @@ int main() {
     SetTargetFPS(60);
     entt::registry registry;
     
-    
 	while (!WindowShouldClose()) {
 		BeginDrawing();
         ClearBackground(BLACK);
-        DrawRectangle(100, 100, 50, 50, RED);
+        DrawRectangle(100, 100, 50, 50, BLUE);
 		EndDrawing();
     }
     return 0;
