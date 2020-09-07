@@ -1,3 +1,6 @@
 [submodule "third_party/entt"]
 	path = third_party/entt
 	url = https://github.com/skypjack/entt
+[submodule "build"]
+	path = build
+	url = https://github.com/Noituri/gn-build

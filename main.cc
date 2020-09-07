@@ -5,7 +5,9 @@
 int main() {
 	InitWindow(1280, 720, "Andora");
     SetTargetFPS(60);
-
+    entt::registry registry;
+    
+    
 	while (!WindowShouldClose()) {
 		BeginDrawing();
         ClearBackground(BLACK);
