@@ -12,7 +12,6 @@ exec_script("//utils/fetch_deps.py", [ raylib_target ])
 config("raylib") {
     include_dirs = [
         "//third_party/raylib/include",
-        "//third_party/raylib/include",
         "//third_party/raylib-cpp/include",
     ]
 
