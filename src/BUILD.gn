@@ -49,6 +49,10 @@ if (is_win) {
 executable("andora") {
     sources = [
         "main.cc",
+        "timer.cc",
+        "timer.h",
+        "physics.cc",
+        "physics.h",
     ]
 
     include_dirs = [ "//third_party/include" ]
