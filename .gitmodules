@@ -4,3 +4,6 @@
 [submodule "build"]
 	path = build
 	url = https://github.com/Noituri/gn-build
+[submodule "third_party/raylib-cpp"]
+	path = third_party/raylib-cpp
+	url = https://github.com/RobLoach/raylib-cpp

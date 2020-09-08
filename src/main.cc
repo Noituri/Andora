@@ -1,15 +1,16 @@
+#define RAYMATH_IMPLEMENTATION
 #include <iostream>
-#include <raylib.h>
-#include <entt.hpp>
+#include "raylib-cpp.hpp"
+#include "entt.hpp"
 
 int main() {
-	InitWindow(1280, 720, "Andora");
+    raylib::Window w(1280, 720, "Andora");
     SetTargetFPS(60);
     entt::registry registry;
     
-	while (!WindowShouldClose()) {
+	while (!w.ShouldClose()) {
 		BeginDrawing();
-        ClearBackground(BLACK);
+        raylib::Color::White.ClearBackground();
         DrawRectangle(100, 100, 50, 50, BLUE);
 		EndDrawing();
     }
