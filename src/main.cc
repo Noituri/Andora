@@ -1,9 +1,9 @@
 #include <iostream>
 
 #include "entt.hpp"
+#include "physics.h"
 #include "raylib-cpp.hpp"
 #include "timer.h"
-#include "physics.h"
 
 constexpr int kTargetFPS = 60;
 

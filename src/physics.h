@@ -20,7 +20,7 @@ class Physics {
   float dt_;
   Vector2 gravity_;
   std::vector<std::unique_ptr<Body>> bodies_;
-  std::vector<Manifold> contacts;
+  std::vector<Manifold> contacts_;
 };
 }  // namespace andora
 
