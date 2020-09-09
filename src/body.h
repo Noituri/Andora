@@ -30,7 +30,6 @@ class Body {
   AABB aabb_;
 
   Body(Vector2 pos, float width, float height, float mass);
-  ~Body();
 };
 
 }  // namespace andora

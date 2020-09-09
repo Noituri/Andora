@@ -12,7 +12,5 @@ Body& Physics::CreateBody(Body&& body) {
   return *bodies_.front().get();
 }
 
-void Physics::RemoveBody(int i) {
-  bodies_.erase(bodies_.begin() + i);
-}
+void Physics::RemoveBody(int i) { bodies_.erase(bodies_.begin() + i); }
 }  // namespace andora
