@@ -53,6 +53,10 @@ executable("andora") {
         "timer.h",
         "physics.cc",
         "physics.h",
+        "body.cc",
+        "body.h",
+        "manifold.cc",
+        "manifold.h",
     ]
 
     include_dirs = [ "//third_party/include" ]

@@ -4,4 +4,4 @@
 void InitTimer();
 float ClockTimeElapsed();
 
-#endif //ANDORA_TIMER_H
+#endif  // ANDORA_TIMER_H

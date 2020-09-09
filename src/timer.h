@@ -28,4 +28,4 @@ class Timer {
 };
 }  // namespace andora
 
-#endif  // !ANDORA_TIMER_H
+#endif  // ANDORA_TIMER_H
