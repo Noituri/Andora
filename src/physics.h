@@ -1,8 +1,6 @@
 #ifndef ANDORA_PHYSICS_H
 #define ANDORA_PHYSICS_H
 
-#include <raymath.h>
-
 #include <memory>
 #include <vector>
 
@@ -14,6 +12,7 @@ class Physics {
  public:
   Physics(float fps);
   Body& CreateBody(Body&& body);
+  void RemoveBody(int i);
 
  private:
   Timer timer_;

@@ -1,7 +1,7 @@
 #ifndef ANDORA_BODY_H
 #define ANDORA_BODY_H
 
-#include <raymath.h>
+#include <raylib-cpp.hpp>
 
 namespace andora {
 struct AABB {
@@ -30,6 +30,7 @@ class Body {
   AABB aabb_;
 
   Body(Vector2 pos, float width, float height, float mass);
+  ~Body();
 };
 
 }  // namespace andora

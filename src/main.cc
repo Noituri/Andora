@@ -13,6 +13,7 @@ int main() {
   entt::registry registry;
 
   andora::Physics physics(kTargetFPS);
+  physics.CreateBody(andora::Body({ 0.0f, 0.0f }, 16, 16, 0.0));
 
   while (!w.ShouldClose()) {
     BeginDrawing();
@@ -20,5 +21,6 @@ int main() {
     DrawRectangle(100, 100, 50, 50, BLUE);
     EndDrawing();
   }
+
   return 0;
 }

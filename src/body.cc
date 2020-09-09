@@ -1,7 +1,9 @@
 #include "body.h"
+#include <iostream>
 
 namespace andora {
 Body::Body(Vector2 pos, float width, float height, float mass) {
+  std::cout << "Construct" << std::endl;
   position_ = pos;
   width_ = width;
   height_ = height_;
@@ -13,5 +15,9 @@ Body::Body(Vector2 pos, float width, float height, float mass) {
   dynamic_friction_ = 0.2f;
   static_friction_ = 0.4f;
   velocity_ = Vector2Zero();
+}
+
+Body::~Body() {
+  std::cout << "DESTRUCTION" << std::endl;
 }
 }  // namespace andora
