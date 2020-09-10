@@ -5,8 +5,8 @@
 
 namespace andora {
 struct AABB {
-  Vector2 min;
-  Vector2 max;
+  raylib::Vector2 min;
+  raylib::Vector2 max;
 };
 
 class Body {
@@ -15,8 +15,8 @@ class Body {
 
   float width_;
   float height_;
-  Vector2 position_;
-  Vector2 velocity_;
+  raylib::Vector2 position_;
+  raylib::Vector2 velocity_;
 
   float static_friction_;
   float dynamic_friction_;
@@ -29,7 +29,7 @@ class Body {
 
   AABB aabb_;
 
-  Body(Vector2 pos, float width, float height, float mass);
+  Body(raylib::Vector2 pos, float width, float height, float mass);
 };
 
 }  // namespace andora

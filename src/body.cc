@@ -1,7 +1,7 @@
 #include "body.h"
 
 namespace andora {
-Body::Body(Vector2 pos, float width, float height, float mass) {
+Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   position_ = pos;
   width_ = width;
   height_ = height_;
@@ -12,6 +12,6 @@ Body::Body(Vector2 pos, float width, float height, float mass) {
   restitution_ = 0.2f;
   dynamic_friction_ = 0.2f;
   static_friction_ = 0.4f;
-  velocity_ = Vector2Zero();
+  velocity_ = raylib::Vector2::Zero();
 }
 }  // namespace andora

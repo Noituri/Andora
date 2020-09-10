@@ -7,12 +7,15 @@ namespace andora {
 class Manifold {
  public:
   Manifold(Body& A, Body& B);
+  void PositionalCorrection();
+  void SolveCollision();
+  bool AABBvsAABB();
 
  private:
   Body& A_;
   Body& B_;
   float penetration_;
-  Vector2 normal_;
+  raylib::Vector2 normal_;
 };
 }  // namespace andora
 

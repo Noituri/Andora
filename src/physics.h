@@ -10,6 +10,8 @@
 namespace andora {
 class Physics {
  public:
+  std::vector<std::unique_ptr<Body>> bodies_;
+
   Physics(float fps);
   Body& CreateBody(Body&& body);
   void RemoveBody(int i);
@@ -17,8 +19,7 @@ class Physics {
  private:
   Timer timer_;
   float dt_;
-  Vector2 gravity_;
-  std::vector<std::unique_ptr<Body>> bodies_;
+  raylib::Vector2 gravity_;
   std::vector<Manifold> contacts_;
 };
 }  // namespace andora
