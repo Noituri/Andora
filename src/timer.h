@@ -24,7 +24,7 @@ class Timer {
   hide_win::LARGE_INTEGER cpu_freq_;
 #endif
 
-  void Timer::GetClockTime(Clock *t);
+  void GetClockTime(Clock *t);
 };
 }  // namespace andora
 

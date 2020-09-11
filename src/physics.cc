@@ -31,8 +31,7 @@ void Physics::GenerateContactPairs() {
 
       A.CalculateAABB();
       B.CalculateAABB();
-      // if (B.position_.y == 600.0)
-      //   std::cout << "A_POS " << B.position_.y << std::endl;
+
       Manifold m(A, B);
       if (m.AABBvsAABB()) contacts_.emplace_back(m);
     }

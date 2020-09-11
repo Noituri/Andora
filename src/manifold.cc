@@ -1,6 +1,6 @@
 #include "manifold.h"
 
-#include <algorithm>
+#include <cmath>
 #include <iostream>
 
 namespace andora {
@@ -39,15 +39,15 @@ void Manifold::SolveCollision() {
 
   float jt = -relative_v.DotProduct(tangent);
   jt /= A_.inv_mass_ + B_.inv_mass_;
-  float mu = std::sqrtf(std::powf(2.0, A_.static_friction_) +
-                        std::powf(2.0, B_.static_friction_));
+  float mu = std::sqrt(std::pow(2.0, A_.static_friction_) +
+                        std::pow(2.0, B_.static_friction_));
 
   raylib::Vector2 friction_impulse;
-  if (std::fabsf(jt) < j * mu) {
+  if (std::abs(jt) < j * mu) {
     friction_impulse = tangent * jt;
   } else {
-    float dynamic_friction = std::sqrtf(std::powf(2.0, A_.dynamic_friction_) +
-                                        std::powf(2.0, B_.dynamic_friction_));
+    float dynamic_friction = std::sqrt(std::pow(2.0, A_.dynamic_friction_) +
+                                        std::pow(2.0, B_.dynamic_friction_));
     friction_impulse = tangent * -j * dynamic_friction;
   }
 

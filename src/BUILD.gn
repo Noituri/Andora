@@ -29,6 +29,8 @@ config("raylib") {
                 "$lib_path/raylib_static.lib",
             ]
         }
+    } else {
+        libs = [ "$lib_path/libraylib.so" ]
     }
 }
 
@@ -41,6 +43,12 @@ config("entt") {
 if (is_win) {
     copy("raylibdll") {
         sources = [ "//third_party/raylib/bin/raylib.dll" ]
+        outputs = [ "$root_out_dir/{{source_file_part}}" ]
+    }
+} else {
+    lib_path = "//third_party/raylib/lib"
+    copy("raylibso") {
+        sources = [ "$lib_path/libraylib.so.3.0.0", "$lib_path/libraylib.so.301" ]
         outputs = [ "$root_out_dir/{{source_file_part}}" ]
     }
 }

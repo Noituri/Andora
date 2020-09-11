@@ -1,14 +1,6 @@
 #include "timer.h"
 
 namespace andora {
-void Timer::GetClockTime(Clock *t) {
-#ifdef WIN32
-  hide_win::QueryPerformanceCounter(t);
-#else
-  clock_gettime(CLOCK_MONOTONIC, t);
-#endif
-}
-
 Timer::Timer() {
   GetClockTime(&start_);
 #ifdef WIN32
@@ -24,6 +16,14 @@ float Timer::GetElapsed() {
 #else
   return (current.tv_sec - start_.tv_sec) * 1e6 +
          (current.tv_nsec - start_.tv_nsec) / 1e3;
+#endif
+}
+
+void Timer::GetClockTime(Clock *t) {
+#ifdef WIN32
+  hide_win::QueryPerformanceCounter(t);
+#else
+  clock_gettime(CLOCK_MONOTONIC, t);
 #endif
 }
 }  // namespace andora
