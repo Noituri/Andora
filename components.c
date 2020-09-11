@@ -34,10 +34,7 @@ void CreateTerrain(Ecs *world, int width, int height, int seed)
 			chunk->blocks[chunk->blocks_size++] = (Vector2) { (float) x * 16, (float) y * 16 };
 		}
     }
-	for (int i = 0; i < chunks_size; i++) {
-		Chunk tmp_c = chunks[i];
-		Chunk c = tmp_c;
-	}
+
     printf("Generated %d chunks\n", chunks_size);
 
     // TODO(noituri): Load only visible chunks to memory, the other chunks should be saved on the disk and freed from memory

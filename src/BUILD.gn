@@ -65,6 +65,12 @@ executable("andora") {
         "body.h",
         "manifold.cc",
         "manifold.h",
+        "components.h",
+        "entities_handler.cc",
+        "entities_handler.h",
+        "utils.h",
+        "perlin.cc",
+        "perlin.h"
     ]
 
     include_dirs = [ "//third_party/include" ]

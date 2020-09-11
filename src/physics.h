@@ -1,5 +1,4 @@
-#ifndef ANDORA_PHYSICS_H
-#define ANDORA_PHYSICS_H
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -28,5 +27,3 @@ class Physics {
   void IntegrateVelocity(Body& b);
 };
 }  // namespace andora
-
-#endif  // ANDORA_TIMER_H

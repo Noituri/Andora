@@ -4,7 +4,7 @@ namespace andora {
 Timer::Timer() {
   GetClockTime(&start_);
 #ifdef WIN32
-  hide_win::QueryPerformanceFrequency(&cpu_freq_);
+  win::QueryPerformanceFrequency(&cpu_freq_);
 #endif
 }
 
@@ -21,7 +21,7 @@ float Timer::GetElapsed() {
 
 void Timer::GetClockTime(Clock *t) {
 #ifdef WIN32
-  hide_win::QueryPerformanceCounter(t);
+  win::QueryPerformanceCounter(t);
 #else
   clock_gettime(CLOCK_MONOTONIC, t);
 #endif

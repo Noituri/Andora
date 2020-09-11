@@ -1,5 +1,4 @@
-#ifndef ANDORA_BODY_H
-#define ANDORA_BODY_H
+#pragma once
 
 #include <raylib-cpp.hpp>
 
@@ -34,5 +33,3 @@ class Body {
 };
 
 }  // namespace andora
-
-#endif  // ANDORA_BODY_H

@@ -1,12 +1,11 @@
-#ifndef ANDORA_TIMER_H
-#define ANDORA_TIMER_H
+#pragma once
 
 #ifdef WIN32
 // importing windows.h in global scope results in naming conflicts
-namespace hide_win {
+namespace win {
 #include <windows.h>
 }
-using Clock = hide_win::LARGE_INTEGER;
+using Clock = win::LARGE_INTEGER;
 #else
 #include <time.h>
 using Clock = timespec;
@@ -21,11 +20,9 @@ class Timer {
  private:
   Clock start_{};
 #ifdef WIN32
-  hide_win::LARGE_INTEGER cpu_freq_;
+  win::LARGE_INTEGER cpu_freq_;
 #endif
 
   void GetClockTime(Clock *t);
 };
 }  // namespace andora
-
-#endif  // ANDORA_TIMER_H

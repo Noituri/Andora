@@ -1,5 +1,4 @@
-#ifndef ANDORA_MANIFOLD_H
-#define ANDORA_MANIFOLD_H
+#pragma once
 
 #include "body.h"
 
@@ -18,5 +17,3 @@ class Manifold {
   raylib::Vector2 normal_;
 };
 }  // namespace andora
-
-#endif
