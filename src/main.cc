@@ -18,6 +18,8 @@ int main() {
 
   while (!w.ShouldClose()) {
     physics.NextStep();
+    if (IsKeyDown(KEY_R))
+      a.position_.y = 500.0f;
     BeginDrawing();
     raylib::Color::Black.ClearBackground();
     DrawRectangleV(a.position_, {16.0f, 16.0f}, BLUE);
