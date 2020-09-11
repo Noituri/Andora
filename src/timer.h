@@ -19,7 +19,7 @@ class Timer {
   float GetElapsed();
 
  private:
-  Clock start_;
+  Clock start_{};
 #ifdef WIN32
   hide_win::LARGE_INTEGER cpu_freq_;
 #endif

@@ -15,7 +15,7 @@ class Manifold {
   Body& A_;
   Body& B_;
   float penetration_;
-  raylib::Vector2 normal_;
+  raylib::Vector2 normal_{};
 };
 }  // namespace andora
 

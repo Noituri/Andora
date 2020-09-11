@@ -4,7 +4,7 @@ namespace andora {
 Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   position_ = pos;
   width_ = width;
-  height_ = height_;
+  height_ = height;
   mass_ = mass;
   inv_mass_ = mass ? (1 / mass) : 0;
   dynamic_ = mass != 0;
@@ -13,5 +13,10 @@ Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   dynamic_friction_ = 0.2f;
   static_friction_ = 0.4f;
   velocity_ = raylib::Vector2::Zero();
+}
+
+void Body::CalculateAABB() {
+  aabb_ = {position_,
+           raylib::Vector2{position_.x + width_, position_.y + height_}};
 }
 }  // namespace andora

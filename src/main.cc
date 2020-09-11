@@ -13,12 +13,15 @@ int main() {
   entt::registry registry;
 
   andora::Physics physics(kTargetFPS);
-  physics.CreateBody({{0.0f, 0.0f}, 16, 16, 0.0});
+  andora::Body& a = physics.CreateBody({{0.0f, 500.0f}, 16, 16, 5.0});
+  andora::Body& b = physics.CreateBody({{0.0f, 600.0f}, 16, 16, 0.0});
 
   while (!w.ShouldClose()) {
+    physics.NextStep();
     BeginDrawing();
     raylib::Color::Black.ClearBackground();
-    DrawRectangle(100, 100, 50, 50, BLUE);
+    DrawRectangleV(a.position_, {16.0f, 16.0f}, BLUE);
+    DrawRectangleV(b.position_, {16.0f, 16.0f}, RED);
     EndDrawing();
   }
 
