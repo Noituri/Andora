@@ -12,8 +12,7 @@ void RenderTerrain(entt::registry& registry) {
 
     float right_offset =
         (camera_pos.x + kScreenWidth / 2.0f) + kChunkWidth * kBlockLen;
-    float left_offset =
-        (camera_pos.x - kScreenWidth / 2.0f) - 40.0f;
+    float left_offset = (camera_pos.x - kScreenWidth / 2.0f) - 40.0f;
     float bottom_offset = (camera_pos.y + kScreenHeight / 2.0f) + 40.0f;
     float top_offset = (camera_pos.y - kScreenHeight / 2.0f) - 40.0f;
 
@@ -23,9 +22,7 @@ void RenderTerrain(entt::registry& registry) {
       for (const auto& block : chunk.blocks) {
         if (block.y > bottom_offset || block.y < top_offset) continue;
 
-        // FIXME(noituri): Draw texture
-        DrawRectangleV(block, {16, 16}, BROWN);
-
+        DrawTextureRec(dirt_txt, (Rectangle){40, 100, 16, 16}, block, WHITE);
         // FIXME(noituri): Add 'CreateCollisionsForBlock'
       }
     }

@@ -53,6 +53,10 @@ if (is_win) {
     }
 }
 
+copy("resources") {
+    sources = [ "//res" ]
+    outputs = [ "$root_out_dir/{{source_file_part}}" ]
+}
 
 executable("andora") {
     sources = [
