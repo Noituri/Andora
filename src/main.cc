@@ -8,24 +8,35 @@
 #include "utils.h"
 
 int main() {
-  raylib::Window w(1280, 720, "Andora");
+  raylib::Window w(andora::kScreenWidth, andora::kScreenHeight, "Andora");
   SetTargetFPS(andora::kTargetFPS);
 
-  andora::EntitiesHandler entities_handler;
-  entities_handler.CreateTerrain(2000, 1000, 420);
+  andora::InitGame();
 
-  return 0;  // Ignore code below for now
-  andora::Physics physics(andora::kTargetFPS);
-  andora::Body& a = physics.CreateBody({{0.0f, 500.0f}, 16, 16, 5.0});
-  andora::Body& b = physics.CreateBody({{0.0f, 600.0f}, 16, 16, 0.0});
+  andora::EntitiesHandler entities_handler;
+  entities_handler.CreateTerrain(2000 * andora::kBlockLen, 1000 * andora::kBlockLen, 12321);
 
   while (!w.ShouldClose()) {
-    physics.NextStep();
-    if (IsKeyDown(KEY_R)) a.position_.y = 500.0f;
+    if (IsKeyDown(KEY_A))
+      andora::main_camera.target.x -= 20;
+    if (IsKeyDown(KEY_D))
+      andora::main_camera.target.x += 20;
+    if (IsKeyDown(KEY_W))
+      andora::main_camera.target.y -= 20;
+    if (IsKeyDown(KEY_S))
+      andora::main_camera.target.y += 20;
+    
+    entities_handler.UpdateNormal();
+
     BeginDrawing();
-    raylib::Color::Black.ClearBackground();
-    DrawRectangleV(a.position_, {16.0f, 16.0f}, BLUE);
-    DrawRectangleV(b.position_, {16.0f, 16.0f}, RED);
+    andora::main_camera.BeginMode2D();
+    {
+      raylib::Color::SkyBlue.ClearBackground();
+      entities_handler.UpdateRender();
+    }
+    andora::main_camera.EndMode2D();
+
+    DrawFPS(10, 10);
     EndDrawing();
   }
 

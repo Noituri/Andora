@@ -4,11 +4,12 @@
 
 #include "components.h"
 #include "perlin.h"
+#include "systems.h"
 #include "utils.h"
 
 namespace andora {
 void EntitiesHandler::CreateTerrain(int w, int h, int s) {
-  auto entity = registry_.create();
+  entt::entity entity = registry_.create();
   comp::Terrain terrain;
   terrain.width = w;
   terrain.height = h;
@@ -24,7 +25,7 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
         tmp_chunk.blocks.clear();
       }
     }
-    int maxY = perlin::Get2D(x / 10, 0, 0.5, 4, s);
+    int maxY = perlin::Get2D(x / 10, 0, 0.5, 4, s) * 100;
     for (int y = maxY / kBlockLen; y < h / kBlockLen; y++) {
       tmp_chunk.blocks.emplace_back(
           raylib::Vector2{x * static_cast<float>(kBlockLen),
@@ -35,4 +36,8 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
   std::cout << "Generated " << terrain.chunks.size() << " chunks" << std::endl;
   registry_.emplace<comp::Terrain>(entity, terrain);
 }
+
+void EntitiesHandler::UpdateNormal() {}
+
+void EntitiesHandler::UpdateRender() { sys::RenderTerrain(registry_); }
 }  // namespace andora
