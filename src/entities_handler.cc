@@ -8,6 +8,10 @@
 #include "utils.h"
 
 namespace andora {
+EntitiesHandler::EntitiesHandler() : physics_(kTargetFPS, {0.0f, 9.0f}) {
+  physics_.CreateBody({{720, -100}, 16, 16, 5});
+}
+
 void EntitiesHandler::CreateTerrain(int w, int h, int s) {
   entt::entity entity = registry_.create();
   comp::Terrain terrain;
@@ -37,7 +41,10 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
   registry_.emplace<comp::Terrain>(entity, terrain);
 }
 
-void EntitiesHandler::UpdateNormal() {}
+void EntitiesHandler::UpdateNormal() { physics_.NextStep(); }
 
-void EntitiesHandler::UpdateRender() { sys::RenderTerrain(registry_); }
+void EntitiesHandler::UpdateRender() {
+  sys::RenderTerrain(registry_, physics_);
+  RenderCollisions(physics_);
+}
 }  // namespace andora

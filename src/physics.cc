@@ -3,8 +3,8 @@
 #include <iostream>
 
 namespace andora {
-Physics::Physics(float fps)
-    : dt_(1 / fps), timer_(Timer()), gravity_(raylib::Vector2{0.0f, 9.0f}) {}
+Physics::Physics(float fps, raylib::Vector2 gravity)
+    : dt_(1 / fps), gravity_(gravity) {}
 
 Body& Physics::CreateBody(Body&& body) {
   std::unique_ptr<Body> new_body = std::make_unique<Body>(body);

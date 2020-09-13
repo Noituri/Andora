@@ -4,7 +4,8 @@
 #include "utils.h"
 
 namespace andora::sys {
-void RenderTerrain(entt::registry& registry) {
+bool colliders_generated = false;  // TODO: Remove this
+void RenderTerrain(entt::registry& registry, Physics& physics) {
   auto view = registry.view<comp::Terrain>();
   for (auto entity : view) {
     comp::Terrain& terrain = view.get<comp::Terrain>(entity);
@@ -22,10 +23,11 @@ void RenderTerrain(entt::registry& registry) {
       for (const auto& block : chunk.blocks) {
         if (block.y > bottom_offset || block.y < top_offset) continue;
 
-        DrawTextureRec(dirt_txt, (Rectangle){40, 100, 16, 16}, block, WHITE);
-        // FIXME(noituri): Add 'CreateCollisionsForBlock'
+        DrawTextureRec(dirt_txt, {40, 100, 16, 16}, block, WHITE);
+        if (!colliders_generated) CreateBlockCollisions(physics, chunk, block);
       }
     }
+    colliders_generated = true;
   }
 }
 }  // namespace andora::sys

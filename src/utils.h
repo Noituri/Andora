@@ -2,6 +2,7 @@
 
 #include <raylib-cpp.hpp>
 
+#include "components.h"
 #include "physics.h"
 
 namespace andora {
@@ -16,4 +17,6 @@ constexpr float kScreenHeight = 720;
 
 void InitGame();
 void RenderCollisions(Physics& p);
+void CreateBlockCollisions(Physics& p, const Chunk& chunk,
+                           const raylib::Vector2& block);
 }  // namespace andora
