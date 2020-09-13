@@ -12,8 +12,9 @@ void Manifold::PositionalCorrection() {
 
   raylib::Vector2 correction =
       normal_ *
-      (std::max(penetration_ - kSlop, 0.0f) / A_.inv_mass_ + B_.inv_mass_) *
+      (std::max(penetration_ - kSlop, 0.0f) / (A_.inv_mass_ + B_.inv_mass_)) *
       kPercent;
+  
   A_.position_ -= correction * A_.inv_mass_;
   B_.position_ += correction * B_.inv_mass_;
 }
