@@ -1,0 +1,13 @@
+namespace andora.schema;
+
+struct Vec2 {
+  x: float;
+  y: float;
+}
+
+table Chunk {
+  pos_x: float;
+  blocks: [Vec2];
+}
+
+root_type Chunk;

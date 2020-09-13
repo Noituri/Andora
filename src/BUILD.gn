@@ -40,6 +40,12 @@ config("entt") {
     ]
 }
 
+config("flatbuffers") {
+    include_dirs = [
+        "//third_party/flatbuffers/include"
+    ]
+}
+
 if (is_win) {
     copy("raylibdll") {
         sources = [ "//third_party/raylib/bin/raylib.dll" ]
@@ -80,10 +86,14 @@ executable("andora") {
         "systems.h",
     ]
 
-    include_dirs = [ "//third_party/include" ]
+    include_dirs = [
+        "//third_party/include",
+        "//schemas/include",
+    ]
 
     configs += [
         ":raylib",
-        ":entt"
+        ":entt",
+        ":flatbuffers",
     ]
 }
