@@ -6,38 +6,33 @@
 #include "chunk_generated.h"
 #include "entities_handler.h"
 #include "physics.h"
+#include "schema_handler.h"
 #include "timer.h"
 #include "utils.h"
 
 int main() {
   //  Flatbuffer experiment
   {
-    flatbuffers::FlatBufferBuilder builder(1024);
-    andora::schema::Vec2 blocks[] = {{1.0, 1.0}, {2.0, 1.0}, {0.0, 0.0}};
-    auto blocks_vec = builder.CreateVectorOfStructs(blocks, 3);
-    auto chunk = andora::schema::CreateChunk(builder, 16.0, blocks_vec);
-    builder.Finish(chunk);
+    andora::SchemaHandler<andora::schema::Chunk *> chunk(
+        "chunk.data", andora::schema::GetChunk);
 
-    auto chunk_file =
-        std::fstream("chunk.data", std::ios::out | std::ios::binary);
-    chunk_file.write(reinterpret_cast<char *>(builder.GetBufferPointer()),
-                     builder.GetSize());
+    std::cout << "CHUNK POS_X" << chunk.scheme_->pos_x() << std::endl;
+    // flatbuffers::FlatBufferBuilder builder(1024);
+    // andora::schema::Vec2 blocks[] = {{1.0, 1.0}, {2.0, 1.0}, {0.0, 0.0}};
+    // auto blocks_vec = builder.CreateVectorOfStructs(blocks, 3);
+    // auto chunk = andora::schema::CreateChunk(builder, 16.0, blocks_vec);
+    // builder.Finish(chunk);
 
-    chunk_file.close();
+    // auto chunk_file =
+    //     std::fstream("chunk.data", std::ios::out | std::ios::binary);
+    // chunk_file.write(reinterpret_cast<char *>(builder.GetBufferPointer()),
+    //                  builder.GetSize());
 
-    std::ifstream in_chunk_file("chunk.data", std::ios::in | std::ios::binary);
-    in_chunk_file.seekg(0, std::ios::end);
-    int length = in_chunk_file.tellg();
-    std::cout << "LEN " << length << std::endl;
-    in_chunk_file.seekg(0, std::ios::beg);
-    char *data = new char[length];
-    in_chunk_file.read(data, length);
-    in_chunk_file.close();
+    // chunk_file.close();
+    // auto loaded_chunk = andora::schema::GetChunk(data);
 
-    auto loaded_chunk = andora::schema::GetChunk(data);
-
-    std::cout << "CHUNK POS_X " << loaded_chunk->pos_x() << ", BLOCK0 "
-              << loaded_chunk->blocks()->Get(0)->x() << std::endl;
+    // std::cout << "CHUNK POS_X " << loaded_chunk->pos_x() << ", BLOCK0 "
+    //           << loaded_chunk->blocks()->Get(0)->x() << std::endl;
   }
 
   return 0;

@@ -84,6 +84,7 @@ executable("andora") {
         "perlin.h",
         "systems.cc",
         "systems.h",
+        "schema_handler.h",
     ]
 
     include_dirs = [
