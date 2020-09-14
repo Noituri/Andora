@@ -75,6 +75,7 @@ executable("andora") {
         "body.h",
         "manifold.cc",
         "manifold.h",
+        "components.cc",
         "components.h",
         "entities_handler.cc",
         "entities_handler.h",

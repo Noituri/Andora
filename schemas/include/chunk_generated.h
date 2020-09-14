@@ -30,8 +30,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec2 FLATBUFFERS_FINAL_CLASS {
   float x() const {
     return flatbuffers::EndianScalar(x_);
   }
+  void mutate_x(float _x) {
+    flatbuffers::WriteScalar(&x_, _x);
+  }
   float y() const {
     return flatbuffers::EndianScalar(y_);
+  }
+  void mutate_y(float _y) {
+    flatbuffers::WriteScalar(&y_, _y);
   }
 };
 FLATBUFFERS_STRUCT_END(Vec2, 8);
@@ -45,8 +51,14 @@ struct Chunk FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   float pos_x() const {
     return GetField<float>(VT_POS_X, 0.0f);
   }
+  bool mutate_pos_x(float _pos_x) {
+    return SetField<float>(VT_POS_X, _pos_x, 0.0f);
+  }
   const flatbuffers::Vector<const andora::schema::Vec2 *> *blocks() const {
     return GetPointer<const flatbuffers::Vector<const andora::schema::Vec2 *> *>(VT_BLOCKS);
+  }
+  flatbuffers::Vector<const andora::schema::Vec2 *> *mutable_blocks() {
+    return GetPointer<flatbuffers::Vector<const andora::schema::Vec2 *> *>(VT_BLOCKS);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -106,6 +118,10 @@ inline const andora::schema::Chunk *GetChunk(const void *buf) {
 
 inline const andora::schema::Chunk *GetSizePrefixedChunk(const void *buf) {
   return flatbuffers::GetSizePrefixedRoot<andora::schema::Chunk>(buf);
+}
+
+inline Chunk *GetMutableChunk(void *buf) {
+  return flatbuffers::GetMutableRoot<Chunk>(buf);
 }
 
 inline bool VerifyChunkBuffer(

@@ -4,9 +4,15 @@
 #include <vector>
 
 namespace andora {
-struct Chunk {
-  std::vector<raylib::Vector2> blocks;
-  int pos_x;
+class Chunk {
+ public:
+  std::string name_;
+  std::vector<raylib::Vector2> blocks_;
+  int pos_x_;
+
+  Chunk() = default;
+  Chunk(const char* name);
+  void Write();
 };
 }  // namespace andora
 

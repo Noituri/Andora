@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <iostream>
 
 namespace andora {
@@ -28,7 +29,7 @@ class SchemaHandler {
   ~SchemaHandler() { delete[] data_; };
 
  private:
-  char* path_;
+  const char* path_;
   char* data_;
   int data_len_;
 };

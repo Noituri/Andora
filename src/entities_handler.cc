@@ -2,8 +2,10 @@
 
 #include <iostream>
 
+#include "chunk_generated.h"
 #include "components.h"
 #include "perlin.h"
+#include "schema_handler.h"
 #include "systems.h"
 #include "utils.h"
 
@@ -22,16 +24,19 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
   Chunk tmp_chunk;
   for (int x = 0; x < (w / kBlockLen); x++) {
     if (x % kChunkWidth == 0) {
-      tmp_chunk.pos_x = x * 16;
+      tmp_chunk.pos_x_ = x * 16;
 
       if (x != 0) {
+        tmp_chunk.name_ =
+            "chunk" + std::to_string(terrain.chunks.size()) + ".data";
+        tmp_chunk.Write();
         terrain.chunks.emplace_back(tmp_chunk);
-        tmp_chunk.blocks.clear();
+        tmp_chunk.blocks_.clear();
       }
     }
     int maxY = perlin::Get2D(x / 10, 0, 0.5, 4, s) * 100;
     for (int y = maxY / kBlockLen; y < h / kBlockLen; y++) {
-      tmp_chunk.blocks.emplace_back(
+      tmp_chunk.blocks_.emplace_back(
           raylib::Vector2{x * static_cast<float>(kBlockLen),
                           y * static_cast<float>(kBlockLen)});
     }
