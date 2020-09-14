@@ -14,6 +14,7 @@ constexpr int kChunkWidth = 16;
 constexpr int kTargetFPS = 60;
 constexpr float kScreenWidth = 1280;
 constexpr float kScreenHeight = 720;
+constexpr char* kGameName = "andora";
 
 void InitGame();
 void RenderCollisions(Physics& p);

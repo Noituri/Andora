@@ -1,13 +1,13 @@
 #include "utils.h"
 
+#include <filesystem>
+#include <iostream>
 #include <raylib-cpp.hpp>
 
 namespace andora {
 
 raylib::Camera2D main_camera({kScreenWidth / 2, kScreenHeight / 2}, {720, 100});
 raylib::Texture2D dirt_txt;
-
-void InitGame() { dirt_txt.Load("./res/dirt.png"); }
 
 void RenderCollisions(Physics& p) {
   for (const auto& body : p.bodies_) {
@@ -53,5 +53,25 @@ void CreateBlockCollisions(Physics& p, const Chunk& chunk,
   }
 
   if (!(t && r && b && l)) p.CreateBody({block, kBlockLen, kBlockLen, 0.0f});
+}
+
+void CreateGameDir() {
+  namespace fs = std::filesystem;
+
+#ifdef WIN32
+  fs::path base_dir = getenv("APPDATA");
+  base_dir /= kGameName;
+#elif __linux
+  fs::path base_dir = getenv("HOME");
+  base_dir /= std::string(".") + kGameName;
+#endif
+
+  std::cout << "Creating game directories" << std::endl;
+  fs::create_directories(base_dir / "saves" / "testingWorld" / "chunks");
+}
+
+void InitGame() {
+  dirt_txt.Load("./res/dirt.png");
+  CreateGameDir();
 }
 }  // namespace andora
