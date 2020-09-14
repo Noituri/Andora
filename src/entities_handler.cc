@@ -20,19 +20,17 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
   terrain.width = w;
   terrain.height = h;
   terrain.seed = s;
+  terrain.chunks_created = 0;
 
   Chunk tmp_chunk;
   for (int x = 0; x < (w / kBlockLen); x++) {
-    if (x % kChunkWidth == 0) {
-      tmp_chunk.pos_x_ = x * 16;
-
-      if (x != 0) {
-        tmp_chunk.name_ =
-            "chunk" + std::to_string(terrain.chunks.size()) + ".data";
-        tmp_chunk.Write();
-        terrain.chunks.emplace_back(tmp_chunk);
-        tmp_chunk.blocks_.clear();
-      }
+    if (x % kChunkWidth == 0 && x != 0) {
+      tmp_chunk.pos_x_ = x * kBlockLen;
+      tmp_chunk.name_ =
+          "chunk" + std::to_string(terrain.chunks_created) + ".data";
+      tmp_chunk.Write();
+      tmp_chunk.blocks_.clear();
+      terrain.chunks_created++;
     }
     int maxY = perlin::Get2D(x / 10, 0, 0.5, 4, s) * 100;
     for (int y = maxY / kBlockLen; y < h / kBlockLen; y++) {
@@ -42,7 +40,7 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
     }
   }
 
-  std::cout << "Generated " << terrain.chunks.size() << " chunks" << std::endl;
+  std::cout << "Generated " << terrain.chunks_created << " chunks" << std::endl;
   registry_.emplace<comp::Terrain>(entity, terrain);
 }
 

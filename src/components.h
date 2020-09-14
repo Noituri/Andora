@@ -9,9 +9,10 @@ class Chunk {
   std::string name_;
   std::vector<raylib::Vector2> blocks_;
   int pos_x_;
+  int id_;
 
   Chunk() = default;
-  Chunk(const char* name);
+  Chunk(const char* name, int id);
   void Write();
 };
 }  // namespace andora
@@ -33,6 +34,7 @@ struct Terrain {
   int width;
   int height;
   int seed;
+  int chunks_created;
 };
 
 }  // namespace andora::comp
