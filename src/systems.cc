@@ -1,6 +1,7 @@
 #include "systems.h"
 
 #include <iostream>
+#include <thread>
 
 #include "components.h"
 #include "utils.h"
@@ -26,25 +27,40 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
 
       std::string tmp_name = "chunk" + std::to_string(i) + ".data";
       Chunk tmp_chunk(tmp_name.c_str(), i);
-      for (const auto& block : tmp_chunk.blocks_) {
-        if (block.y > bottom_offset || block.y < top_offset) continue;
-        CreateBlockCollisions(physics, tmp_chunk, block);
-      }
+
+      std::thread thread_obj(
+          [=](Physics& p) {
+            for (const auto& block : tmp_chunk.blocks_) {
+              if (block.y > bottom_offset || block.y < top_offset) continue;
+              CreateBlockCollisions(p, tmp_chunk, block);
+            }
+          },
+          std::ref(physics));
+
+      thread_obj.detach();
 
       terrain.chunks.emplace_back(tmp_chunk);
       std::cout << "CHUNK " << i << " LOADED " << std::endl;
     }
-    // TODO: Load and remove chunks in async
     // TODO: Create new colliders if y axis changes
     for (auto chunk = terrain.chunks.begin(); chunk != terrain.chunks.end();) {
       if (chunk->pos_x_ > right_offset || chunk->pos_x_ < left_offset) {
-        auto it = std::remove_if(physics.bodies_.begin(), physics.bodies_.end(),
-                                 [&](const std::unique_ptr<Body>& b) {
-                                   return b->owner_ == chunk->id_;
-                                 });
-        physics.bodies_.erase(it, physics.bodies_.end());
         chunk->Write();
+        std::thread thread_obj(
+            [](Physics& p, int chunk_id) {
+              std::lock_guard<std::mutex> guard(p.bodies_mutex_);
+              auto it = std::remove_if(p.bodies_.begin(), p.bodies_.end(),
+                                       [&](const std::unique_ptr<Body>& b) {
+                                         return b->owner_ == chunk_id;
+                                       });
+              p.bodies_.erase(it, p.bodies_.end());
+            },
+            std::ref(physics), chunk->id_);
+
+        thread_obj.detach();
         terrain.chunks.erase(chunk);
+        std::cout << "CHUNK " << chunk->id_ << " UNLOADED " << std::endl;
+
         continue;
       }
 

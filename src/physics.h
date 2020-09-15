@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include "manifold.h"
@@ -9,6 +10,7 @@
 namespace andora {
 class Physics {
  public:
+  std::mutex bodies_mutex_;
   std::vector<std::unique_ptr<Body>> bodies_;
 
   Physics(float fps, raylib::Vector2 gravity);

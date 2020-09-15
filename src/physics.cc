@@ -8,12 +8,16 @@ Physics::Physics(float fps, raylib::Vector2 gravity)
 
 Body& Physics::CreateBody(Body&& body) {
   std::unique_ptr<Body> new_body = std::make_unique<Body>(body);
+  std::lock_guard<std::mutex> guard(bodies_mutex_);
   bodies_.emplace_back(std::move(new_body));
 
   return *bodies_.back().get();
 }
 
-void Physics::RemoveBody(int i) { bodies_.erase(bodies_.begin() + i); }
+void Physics::RemoveBody(int i) {
+  std::lock_guard<std::mutex> guard(bodies_mutex_);
+  bodies_.erase(bodies_.begin() + i);
+}
 
 void Physics::GenerateContactPairs() {
   contacts_.clear();
@@ -54,6 +58,7 @@ void Physics::NextStep() {
   if (acc > 0.2f) acc = 0.2f;
 
   while (acc > dt_) {
+    std::lock_guard<std::mutex> guard(bodies_mutex_);
     GenerateContactPairs();
 
     for (auto& b : bodies_) IntegrateVelocity(*b.get());
