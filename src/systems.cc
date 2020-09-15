@@ -25,12 +25,23 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
       if (std::any_of(terrain.chunks.begin(), terrain.chunks.end(), compare))
         continue;
       std::string tmp_name = "chunk" + std::to_string(i) + ".data";
-      terrain.chunks.emplace_back(Chunk{tmp_name.c_str(), i});
+      Chunk tmp_chunk(tmp_name.c_str(), i);
+      for (const auto& block : tmp_chunk.blocks_) {
+        if (block.y > bottom_offset || block.y < top_offset) continue;
+        int id = CreateBlockCollisions(physics, tmp_chunk, block);
+        if (id != -1) {
+          tmp_chunk.colliders_.emplace_back(id);
+        }
+      }
+      terrain.chunks.emplace_back(tmp_chunk);
       std::cout << "CHUNK " << i << " LOADED " << std::endl;
     }
     for (auto chunk = terrain.chunks.begin(); chunk != terrain.chunks.end();) {
       if (chunk->pos_x_ > right_offset || chunk->pos_x_ < left_offset) {
         chunk->Write();
+        for (const auto& c : chunk->colliders_) {
+          physics.RemoveBody(c);
+        }
         terrain.chunks.erase(chunk);
         std::cout << "CHUNK " << chunk->id_ << " UNLOADED " << std::endl;
         continue;
@@ -40,8 +51,7 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
         if (block.y > bottom_offset || block.y < top_offset) continue;
 
         DrawTextureRec(dirt_txt, {40, 100, 16, 16}, block, WHITE);
-        // if (!colliders_generated) CreateBlockCollisions(physics,
-        // chunk,
+        // if (!colliders_generated) CreateBlockCollisions(physics, chunk,
         // block);
       }
       chunk++;

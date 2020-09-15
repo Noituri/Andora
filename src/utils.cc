@@ -15,44 +15,48 @@ void RenderCollisions(Physics& p) {
   }
 }
 
-// void CreateBlockCollisions(Physics& p, const Chunk& chunk,
-//                            const raylib::Vector2& block) {
-//   int t = 0, r = 0, b = 0, l = 0;
-//   for (const auto& tmp_block : chunk.blocks) {
-//     // BOTTOM
-//     if ((int)block.y + 16 == (int)tmp_block.y &&
-//         (int)block.x == (int)tmp_block.x) {
-//       b = 1;
-//       continue;
-//     }
+int CreateBlockCollisions(Physics& p, const Chunk& chunk,
+                          const raylib::Vector2& block) {
+  int t = 0, r = 0, b = 0, l = 0;
+  for (const auto& tmp_block : chunk.blocks_) {
+    // BOTTOM
+    if ((int)block.y + 16 == (int)tmp_block.y &&
+        (int)block.x == (int)tmp_block.x) {
+      b = 1;
+      continue;
+    }
 
-//     // TOP
-//     if ((int)block.y - 16 == (int)tmp_block.y &&
-//         (int)block.x == (int)tmp_block.x) {
-//       t = 1;
-//       continue;
-//     }
+    // TOP
+    if ((int)block.y - 16 == (int)tmp_block.y &&
+        (int)block.x == (int)tmp_block.x) {
+      t = 1;
+      continue;
+    }
 
-//     // RIGHT
-//     if ((int)block.x + 16 == (int)tmp_block.x &&
-//         (int)block.y == (int)tmp_block.y) {
-//       r = 1;
-//       continue;
-//     }
+    // RIGHT
+    if ((int)block.x + 16 == (int)tmp_block.x &&
+        (int)block.y == (int)tmp_block.y) {
+      r = 1;
+      continue;
+    }
 
-//     // LEFT
-//     if ((int)block.x - 16 == (int)tmp_block.x &&
-//         (int)block.y == (int)tmp_block.y) {
-//       l = 1;
-//       continue;
-//     }
-//     if (t && r && b && l) {
-//       break;
-//     }
-//   }
+    // LEFT
+    if ((int)block.x - 16 == (int)tmp_block.x &&
+        (int)block.y == (int)tmp_block.y) {
+      l = 1;
+      continue;
+    }
+    if (t && r && b && l) {
+      break;
+    }
+  }
 
-//   if (!(t && r && b && l)) p.CreateBody({block, kBlockLen, kBlockLen, 0.0f});
-// }
+  if (!(t && r && b && l)) {
+    return p.CreateBody({block, kBlockLen, kBlockLen, 0.0f});
+  }
+
+  return -1;
+}
 
 fs::path GetBaseDir() {
 #ifdef WIN32

@@ -12,7 +12,7 @@ class Physics {
   std::vector<std::unique_ptr<Body>> bodies_;
 
   Physics(float fps, raylib::Vector2 gravity);
-  Body& CreateBody(Body&& body);
+  int CreateBody(Body&& body);
   void RemoveBody(int i);
   void NextStep();
 
