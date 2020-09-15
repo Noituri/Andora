@@ -8,7 +8,6 @@ class Chunk {
  public:
   std::string name_;
   std::vector<raylib::Vector2> blocks_;
-  std::vector<int> colliders_;
   int pos_x_;
   int id_;
 

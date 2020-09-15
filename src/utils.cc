@@ -15,8 +15,8 @@ void RenderCollisions(Physics& p) {
   }
 }
 
-int CreateBlockCollisions(Physics& p, const Chunk& chunk,
-                          const raylib::Vector2& block) {
+void CreateBlockCollisions(Physics& p, const Chunk& chunk,
+                           const raylib::Vector2& block) {
   int t = 0, r = 0, b = 0, l = 0;
   for (const auto& tmp_block : chunk.blocks_) {
     // BOTTOM
@@ -52,10 +52,8 @@ int CreateBlockCollisions(Physics& p, const Chunk& chunk,
   }
 
   if (!(t && r && b && l)) {
-    return p.CreateBody({block, kBlockLen, kBlockLen, 0.0f});
+    p.CreateBody({block, kBlockLen, kBlockLen, 0.0f}).owner_ = chunk.id_;
   }
-
-  return -1;
 }
 
 fs::path GetBaseDir() {

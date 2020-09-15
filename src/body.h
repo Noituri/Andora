@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <raylib-cpp.hpp>
 
 namespace andora {
@@ -28,8 +29,10 @@ class Body {
 
   AABB aabb_{};
 
+  std::optional<int> owner_;
+
   Body(raylib::Vector2 pos, float width, float height, float mass);
   void CalculateAABB();
 };
 
-}  // namespace andora
+}  // namespace andoradd

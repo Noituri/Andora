@@ -13,6 +13,7 @@ Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   dynamic_friction_ = 0.2f;
   static_friction_ = 0.4f;
   velocity_ = raylib::Vector2::Zero();
+  owner_ = -1;
 }
 
 void Body::CalculateAABB() {

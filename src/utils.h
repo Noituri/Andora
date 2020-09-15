@@ -22,7 +22,7 @@ constexpr char* kGameChunksDir = "chunks";
 
 void InitGame();
 void RenderCollisions(Physics& p);
-int CreateBlockCollisions(Physics& p, const Chunk& chunk,
+void CreateBlockCollisions(Physics& p, const Chunk& chunk,
                            const raylib::Vector2& block);
 
 fs::path GetSaveDir();
