@@ -22,8 +22,7 @@ constexpr char* kGameChunksDir = "chunks";
 
 void InitGame();
 void RenderCollisions(Physics& p);
-void CreateBlockCollisions(Physics& p, const Chunk& chunk,
-                           const raylib::Vector2& block);
+bool IsBlockSurrounded(const Chunk& chunk, const Block& block);
 
 fs::path GetSaveDir();
 }  // namespace andora

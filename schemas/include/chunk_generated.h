@@ -11,6 +11,8 @@ namespace schema {
 
 struct Vec2;
 
+struct Block;
+
 struct Chunk;
 struct ChunkBuilder;
 
@@ -36,6 +38,32 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec2 FLATBUFFERS_FINAL_CLASS {
 };
 FLATBUFFERS_STRUCT_END(Vec2, 8);
 
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Block FLATBUFFERS_FINAL_CLASS {
+ private:
+  andora::schema::Vec2 pos_;
+  uint8_t has_collider_;
+  int8_t padding0__;  int16_t padding1__;
+
+ public:
+  Block() {
+    memset(static_cast<void *>(this), 0, sizeof(Block));
+  }
+  Block(const andora::schema::Vec2 &_pos, bool _has_collider)
+      : pos_(_pos),
+        has_collider_(flatbuffers::EndianScalar(static_cast<uint8_t>(_has_collider))),
+        padding0__(0),
+        padding1__(0) {
+    (void)padding0__;    (void)padding1__;
+  }
+  const andora::schema::Vec2 &pos() const {
+    return pos_;
+  }
+  bool has_collider() const {
+    return flatbuffers::EndianScalar(has_collider_) != 0;
+  }
+};
+FLATBUFFERS_STRUCT_END(Block, 12);
+
 struct Chunk FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef ChunkBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -45,8 +73,8 @@ struct Chunk FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   float pos_x() const {
     return GetField<float>(VT_POS_X, 0.0f);
   }
-  const flatbuffers::Vector<const andora::schema::Vec2 *> *blocks() const {
-    return GetPointer<const flatbuffers::Vector<const andora::schema::Vec2 *> *>(VT_BLOCKS);
+  const flatbuffers::Vector<const andora::schema::Block *> *blocks() const {
+    return GetPointer<const flatbuffers::Vector<const andora::schema::Block *> *>(VT_BLOCKS);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -64,7 +92,7 @@ struct ChunkBuilder {
   void add_pos_x(float pos_x) {
     fbb_.AddElement<float>(Chunk::VT_POS_X, pos_x, 0.0f);
   }
-  void add_blocks(flatbuffers::Offset<flatbuffers::Vector<const andora::schema::Vec2 *>> blocks) {
+  void add_blocks(flatbuffers::Offset<flatbuffers::Vector<const andora::schema::Block *>> blocks) {
     fbb_.AddOffset(Chunk::VT_BLOCKS, blocks);
   }
   explicit ChunkBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -82,7 +110,7 @@ struct ChunkBuilder {
 inline flatbuffers::Offset<Chunk> CreateChunk(
     flatbuffers::FlatBufferBuilder &_fbb,
     float pos_x = 0.0f,
-    flatbuffers::Offset<flatbuffers::Vector<const andora::schema::Vec2 *>> blocks = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<const andora::schema::Block *>> blocks = 0) {
   ChunkBuilder builder_(_fbb);
   builder_.add_blocks(blocks);
   builder_.add_pos_x(pos_x);
@@ -92,8 +120,8 @@ inline flatbuffers::Offset<Chunk> CreateChunk(
 inline flatbuffers::Offset<Chunk> CreateChunkDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     float pos_x = 0.0f,
-    const std::vector<andora::schema::Vec2> *blocks = nullptr) {
-  auto blocks__ = blocks ? _fbb.CreateVectorOfStructs<andora::schema::Vec2>(*blocks) : 0;
+    const std::vector<andora::schema::Block> *blocks = nullptr) {
+  auto blocks__ = blocks ? _fbb.CreateVectorOfStructs<andora::schema::Block>(*blocks) : 0;
   return andora::schema::CreateChunk(
       _fbb,
       pos_x,

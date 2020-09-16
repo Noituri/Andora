@@ -7,8 +7,8 @@ Physics::Physics(float fps, raylib::Vector2 gravity)
     : dt_(1 / fps), gravity_(gravity) {}
 
 Body& Physics::CreateBody(Body&& body) {
-  std::unique_ptr<Body> new_body = std::make_unique<Body>(body);
   std::lock_guard<std::mutex> guard(bodies_mutex_);
+  std::unique_ptr<Body> new_body = std::make_unique<Body>(body);
   bodies_.emplace_back(std::move(new_body));
 
   return *bodies_.back().get();
@@ -32,6 +32,8 @@ void Physics::GenerateContactPairs() {
       if (!(A.dynamic_ || B.dynamic_)) continue;
 
       if (!(A.layer_ & B.layer_)) continue;
+
+      if (A.position_.Distance(B.position_) > 64) continue;
 
       A.CalculateAABB();
       B.CalculateAABB();
@@ -61,6 +63,7 @@ void Physics::NextStep() {
     std::lock_guard<std::mutex> guard(bodies_mutex_);
     GenerateContactPairs();
 
+    // TODO: Freeze objects that are too far away (I think(?))
     for (auto& b : bodies_) IntegrateVelocity(*b.get());
     for (auto& c : contacts_) c.SolveCollision();
     for (auto& b : bodies_) IntegrateVelocity(*b.get());

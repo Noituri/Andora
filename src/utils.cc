@@ -16,45 +16,50 @@ void RenderCollisions(Physics& p) {
   }
 }
 
-void CreateBlockCollisions(Physics& p, const Chunk& chunk,
-                           const raylib::Vector2& block) {
-  int t = 0, r = 0, b = 0, l = 0;
+bool IsBlockSurrounded(const Chunk& chunk, const Block& block) {
+  int block_x = static_cast<int>(block.pos.x);
+  int block_y = static_cast<int>(block.pos.y);
+  int chunk_x = static_cast<int>(chunk.pos_x_);
+
+  bool t = false;
+  bool r = chunk_x - kBlockLen == block_x;
+  bool b = false;
+  bool l = chunk_x - kBlockLen * kChunkWidth == block_x;
+
   for (const auto& tmp_block : chunk.blocks_) {
+    int tmp_block_x = static_cast<int>(tmp_block.pos.x);
+    int tmp_block_y = static_cast<int>(tmp_block.pos.y);
+
     // BOTTOM
-    if ((int)block.y + 16 == (int)tmp_block.y &&
-        (int)block.x == (int)tmp_block.x) {
-      b = 1;
+    if (block_y + 16 == tmp_block_y && block_x == tmp_block_x) {
+      b = true;
       continue;
     }
 
     // TOP
-    if ((int)block.y - 16 == (int)tmp_block.y &&
-        (int)block.x == (int)tmp_block.x) {
-      t = 1;
+    if (block_y - 16 == tmp_block_y && block_x == tmp_block_x) {
+      t = true;
       continue;
     }
 
     // RIGHT
-    if ((int)block.x + 16 == (int)tmp_block.x &&
-        (int)block.y == (int)tmp_block.y) {
-      r = 1;
+    if (block_x + 16 == tmp_block_x && block_y == tmp_block_y) {
+      r = true;
       continue;
     }
 
     // LEFT
-    if ((int)block.x - 16 == (int)tmp_block.x &&
-        (int)block.y == (int)tmp_block.y) {
-      l = 1;
+    if (block_x - 16 == tmp_block_x && block_y == tmp_block_y) {
+      l = true;
       continue;
     }
+
     if (t && r && b && l) {
-      break;
+      return true;
     }
   }
 
-  if (!(t && r && b && l)) {
-    p.CreateBody({block, kBlockLen, kBlockLen, 0.0f}).owner_ = chunk.id_;
-  }
+  return false;
 }
 
 fs::path GetBaseDir() {

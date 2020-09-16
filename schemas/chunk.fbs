@@ -5,9 +5,14 @@ struct Vec2 {
   y: float;
 }
 
+struct Block {
+  pos: Vec2;
+  has_collider: bool;
+}
+
 table Chunk {
   pos_x: float;
-  blocks: [Vec2];
+  blocks: [Block];
 }
 
 root_type Chunk;

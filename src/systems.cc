@@ -9,6 +9,7 @@
 namespace andora::sys {
 void RenderTerrain(entt::registry& registry, Physics& physics) {
   auto view = registry.view<comp::Terrain>();
+
   for (auto entity : view) {
     comp::Terrain& terrain = view.get<comp::Terrain>(entity);
     raylib::Vector2 camera_pos = main_camera.target;
@@ -27,22 +28,11 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
 
       std::string tmp_name = "chunk" + std::to_string(i) + ".data";
       Chunk tmp_chunk(tmp_name.c_str(), i);
-
-      std::thread thread_obj(
-          [=](Physics& p) {
-            for (const auto& block : tmp_chunk.blocks_) {
-              if (block.y > bottom_offset || block.y < top_offset) continue;
-              CreateBlockCollisions(p, tmp_chunk, block);
-            }
-          },
-          std::ref(physics));
-
-      thread_obj.detach();
-
       terrain.chunks.emplace_back(tmp_chunk);
+
       std::cout << "CHUNK " << i << " LOADED " << std::endl;
     }
-    // TODO: Create new colliders if y axis changes
+
     for (auto chunk = terrain.chunks.begin(); chunk != terrain.chunks.end();) {
       if (chunk->pos_x_ > right_offset || chunk->pos_x_ < left_offset) {
         chunk->Write();
@@ -60,14 +50,31 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
         thread_obj.detach();
         terrain.chunks.erase(chunk);
         std::cout << "CHUNK " << chunk->id_ << " UNLOADED " << std::endl;
-
         continue;
       }
 
-      for (const auto& block : chunk->blocks_) {
-        if (block.y > bottom_offset || block.y < top_offset) continue;
+      for (auto& block : chunk->blocks_) {
+        if (block.pos.y > bottom_offset || block.pos.y < top_offset) {
+          if (block.has_collider && block.loaded_collider) {
+            std::lock_guard<std::mutex> guard(physics.bodies_mutex_);
+            auto it =
+                std::remove_if(physics.bodies_.begin(), physics.bodies_.end(),
+                               [&](const std::unique_ptr<Body>& b) {
+                                 return b->position_ == block.pos;
+                               });
+            physics.bodies_.erase(it, physics.bodies_.end());
+            block.loaded_collider = false;
+          }
+          continue;
+        }
 
-        DrawTextureRec(dirt_txt, {40, 100, 16, 16}, block, WHITE);
+        if (block.has_collider && !block.loaded_collider) {
+          physics.CreateBody({block.pos, kBlockLen, kBlockLen, 0.0f}).owner_ =
+              chunk->id_;
+          block.loaded_collider = true;
+        }
+
+        DrawTextureRec(dirt_txt, {40, 100, 16, 16}, block.pos, WHITE);
       }
       chunk++;
     }

@@ -18,14 +18,13 @@ int main() {
 
   andora::EntitiesHandler entities_handler;
   entities_handler.CreateTerrain(2000 * andora::kBlockLen,
-                                 1000 * andora::kBlockLen, 12321);
+                                 500 * andora::kBlockLen, 12321);
 
   while (!w.ShouldClose()) {
     if (IsKeyDown(KEY_A)) andora::main_camera.target.x -= 20;
     if (IsKeyDown(KEY_D)) andora::main_camera.target.x += 20;
     if (IsKeyDown(KEY_W)) andora::main_camera.target.y -= 20;
     if (IsKeyDown(KEY_S)) andora::main_camera.target.y += 20;
-
     entities_handler.UpdateNormal();
 
     BeginDrawing();

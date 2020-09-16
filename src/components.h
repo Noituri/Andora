@@ -4,10 +4,16 @@
 #include <vector>
 
 namespace andora {
+struct Block {
+  raylib::Vector2 pos;
+  bool has_collider;
+  bool loaded_collider;
+};
+
 class Chunk {
  public:
   std::string name_;
-  std::vector<raylib::Vector2> blocks_;
+  std::vector<Block> blocks_;
   int pos_x_;
   int id_;
 
