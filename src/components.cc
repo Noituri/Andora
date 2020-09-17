@@ -42,4 +42,10 @@ void Chunk::Write() {
                    builder.GetSize());
   chunk_file.close();
 }
+
+std::string Chunk::GetSavePath() {
+  assert(!name_.empty());
+  fs::path chunk_path = GetSaveDir() / kGameChunksDir / name_;
+  return chunk_path.string();
+}
 }  // namespace andora

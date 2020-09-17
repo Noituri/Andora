@@ -20,6 +20,7 @@ class Chunk {
   Chunk() = default;
   Chunk(const char* name, int id);
   void Write();
+  std::string GetSavePath();
 };
 }  // namespace andora
 

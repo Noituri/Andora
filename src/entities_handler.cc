@@ -31,14 +31,17 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
       tmp_chunk.name_ =
           "chunk" + std::to_string(terrain.chunks_created) + ".data";
 
-      std::thread job([&, tmp_chunk]() mutable {
-        for (auto& block : tmp_chunk.blocks_) {
-          block.has_collider = !IsBlockSurrounded(tmp_chunk, block);
-        }
-        tmp_chunk.Write();
-      });
+      if (!fs::exists(tmp_chunk.GetSavePath())) {
+        std::thread job([&, tmp_chunk]() mutable {
+          for (auto& block : tmp_chunk.blocks_) {
+            block.has_collider = !IsBlockSurrounded(tmp_chunk, block);
+          }
+          tmp_chunk.Write();
+        });
 
-      jobs.emplace_back(std::move(job));
+        jobs.emplace_back(std::move(job));
+      }
+
       tmp_chunk.blocks_.clear();
       terrain.chunks_created++;
     }
