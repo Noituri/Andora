@@ -12,7 +12,7 @@
 
 namespace andora {
 EntitiesHandler::EntitiesHandler() : physics_(kTargetFPS, {0.0f, 9.0f}) {
-  physics_.CreateBody({{720, -100}, 16, 16, 5});
+  physics_.CreateBody({{720, -200}, 16, 16, 5});
 }
 
 void EntitiesHandler::CreateTerrain(int w, int h, int s) {
@@ -59,7 +59,14 @@ void EntitiesHandler::CreateTerrain(int w, int h, int s) {
 
   std::cout << "Generated " << terrain.chunks_created << " chunks" << std::endl;
   registry_.emplace<comp::Terrain>(entity, terrain);
-}  // namespace andora
+}
+
+void EntitiesHandler::CreatePlayer(float x, float y) {
+  entt::entity entity = registry_.create();
+
+  comp::PhysicsBody body = physics_.CreateBody({{x, y}, 16, 32, 5.0});
+  registry_.emplace<comp::PhysicsBody>(entity, body);
+}
 
 void EntitiesHandler::UpdateNormal() { physics_.NextStep(); }
 

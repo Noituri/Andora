@@ -10,6 +10,7 @@ class EntitiesHandler {
  public:
   EntitiesHandler();
   void CreateTerrain(int w, int h, int s);
+  void CreatePlayer(float x, float y);
   void UpdateNormal();
   void UpdateRender();
 

@@ -6,12 +6,12 @@ namespace andora {
 Physics::Physics(float fps, raylib::Vector2 gravity)
     : dt_(1 / fps), gravity_(gravity) {}
 
-Body& Physics::CreateBody(Body&& body) {
+Body* Physics::CreateBody(Body&& body) {
   std::lock_guard<std::mutex> guard(bodies_mutex_);
   std::unique_ptr<Body> new_body = std::make_unique<Body>(body);
   bodies_.emplace_back(std::move(new_body));
 
-  return *bodies_.back().get();
+  return bodies_.back().get();
 }
 
 void Physics::RemoveBody(int i) {

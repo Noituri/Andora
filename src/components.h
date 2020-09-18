@@ -3,6 +3,8 @@
 #include <raylib-cpp.hpp>
 #include <vector>
 
+#include "body.h"
+
 namespace andora {
 struct Block {
   raylib::Vector2 pos;
@@ -27,6 +29,8 @@ class Chunk {
 namespace andora::comp {
 
 using Transform = raylib::Vector2;
+
+using PhysicsBody = Body*;
 
 struct Sprite {
   raylib::Texture2D txt;

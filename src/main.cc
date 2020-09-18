@@ -19,6 +19,7 @@ int main() {
   andora::EntitiesHandler entities_handler;
   entities_handler.CreateTerrain(2000 * andora::kBlockLen,
                                  500 * andora::kBlockLen, 12321);
+  entities_handler.CreatePlayer(720.0f, -50.0f);
 
   while (!w.ShouldClose()) {
     if (IsKeyDown(KEY_A)) andora::main_camera.target.x -= 20;

@@ -69,7 +69,7 @@ void RenderTerrain(entt::registry& registry, Physics& physics) {
         }
 
         if (block.has_collider && !block.loaded_collider) {
-          physics.CreateBody({block.pos, kBlockLen, kBlockLen, 0.0f}).owner_ =
+          physics.CreateBody({block.pos, kBlockLen, kBlockLen, 0.0f})->owner_ =
               chunk->id_;
           block.loaded_collider = true;
         }
