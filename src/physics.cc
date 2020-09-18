@@ -21,9 +21,7 @@ void Physics::RemoveBody(int i) {
 
 void Physics::GenerateContactPairs() {
   contacts_.clear();
-  AABB A_aabb;
-  AABB B_aabb;
-
+  
   for (size_t i = 0; i < bodies_.size(); i++) {
     Body& A = *bodies_[i].get();
 
@@ -34,9 +32,6 @@ void Physics::GenerateContactPairs() {
       if (!(A.layer_ & B.layer_)) continue;
 
       if (A.position_.Distance(B.position_) > 64) continue;
-
-      A.CalculateAABB();
-      B.CalculateAABB();
 
       Manifold m(A, B);
       if (m.AABBvsAABB()) contacts_.emplace_back(m);

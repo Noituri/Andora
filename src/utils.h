@@ -17,8 +17,8 @@ constexpr int kChunkWidth = 32;
 constexpr int kTargetFPS = 60;
 constexpr float kScreenWidth = 1280;
 constexpr float kScreenHeight = 720;
-constexpr char* kGameName = "andora";
-constexpr char* kGameChunksDir = "chunks";
+constexpr const char* kGameName = "andora";
+constexpr const char* kGameChunksDir = "chunks";
 
 void InitGame();
 void RenderCollisions(Physics& p);

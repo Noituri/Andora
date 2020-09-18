@@ -12,7 +12,7 @@ void RenderCollisions(Physics& p) {
   std::lock_guard<std::mutex> guard(p.bodies_mutex_);
   for (const auto& body : p.bodies_) {
     DrawRectangleLines(body->position_.x, body->position_.y, body->width_,
-                       body->height_, RED);
+                       body->height_ , RED);
   }
 }
 

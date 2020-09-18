@@ -1,5 +1,7 @@
 #include "body.h"
 
+#include <iostream>
+
 namespace andora {
 Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   position_ = pos;
@@ -14,10 +16,5 @@ Body::Body(raylib::Vector2 pos, float width, float height, float mass) {
   static_friction_ = 0.4f;
   velocity_ = raylib::Vector2::Zero();
   owner_ = -1;
-}
-
-void Body::CalculateAABB() {
-  aabb_ = {position_,
-           raylib::Vector2{position_.x + width_, position_.y + height_}};
 }
 }  // namespace andora

@@ -4,11 +4,6 @@
 #include <raylib-cpp.hpp>
 
 namespace andora {
-struct AABB {
-  raylib::Vector2 min;
-  raylib::Vector2 max;
-};
-
 class Body {
  public:
   int layer_;
@@ -27,12 +22,9 @@ class Body {
 
   bool dynamic_;
 
-  AABB aabb_{};
-
   std::optional<int> owner_;
 
   Body(raylib::Vector2 pos, float width, float height, float mass);
-  void CalculateAABB();
 };
 
 }  // namespace andoradd

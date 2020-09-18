@@ -14,7 +14,7 @@ void Manifold::PositionalCorrection() {
       normal_ *
       (std::max(penetration_ - kSlop, 0.0f) / (A_.inv_mass_ + B_.inv_mass_)) *
       kPercent;
-  
+
   A_.position_ -= correction * A_.inv_mass_;
   B_.position_ += correction * B_.inv_mass_;
 }
@@ -41,14 +41,14 @@ void Manifold::SolveCollision() {
   float jt = -relative_v.DotProduct(tangent);
   jt /= A_.inv_mass_ + B_.inv_mass_;
   float mu = std::sqrt(std::pow(2.0, A_.static_friction_) +
-                        std::pow(2.0, B_.static_friction_));
+                       std::pow(2.0, B_.static_friction_));
 
   raylib::Vector2 friction_impulse;
   if (std::abs(jt) < j * mu) {
     friction_impulse = tangent * jt;
   } else {
     float dynamic_friction = std::sqrt(std::pow(2.0, A_.dynamic_friction_) +
-                                        std::pow(2.0, B_.dynamic_friction_));
+                                       std::pow(2.0, B_.dynamic_friction_));
     friction_impulse = tangent * -j * dynamic_friction;
   }
 
@@ -57,17 +57,19 @@ void Manifold::SolveCollision() {
 }
 
 bool Manifold::AABBvsAABB() {
-  AABB A_aabb = A_.aabb_;
-  AABB B_aabb = B_.aabb_;
+  raylib::Vector2 A_pos(A_.position_.x + A_.width_ / 2,
+                        A_.position_.y + A_.height_ / 2);
+  raylib::Vector2 B_pos(B_.position_.x + B_.width_ / 2,
+                        B_.position_.y + B_.height_ / 2);
 
-  raylib::Vector2 n = B_.position_ - A_.position_;
-  float a_extent = (A_aabb.max.x - A_aabb.min.x) / 2;
-  float b_extent = (B_aabb.max.x - B_aabb.min.x) / 2;
+  raylib::Vector2 n = B_pos - A_pos;
+  float a_extent = A_.width_ / 2;
+  float b_extent = B_.width_ / 2;
 
   float x_overlap = a_extent + b_extent - fabsf(n.x);
   if (x_overlap > 0) {
-    a_extent = (A_aabb.max.y - A_aabb.min.y) / 2;
-    b_extent = (B_aabb.max.y - B_aabb.min.y) / 2;
+    a_extent = A_.height_ / 2;
+    b_extent = B_.height_ / 2;
 
     float y_overlap = a_extent + b_extent - fabsf(n.y);
     if (y_overlap > 0) {
