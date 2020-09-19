@@ -7,7 +7,7 @@ namespace andora {
 template <class T>
 class SchemaHandler {
  public:
-  T scheme_;
+  T schema_;
 
   template <class F>
   SchemaHandler(const char* path, F&& get_schema) : path_(path) {
@@ -18,11 +18,11 @@ class SchemaHandler {
     data_ = new char[data_len_];
     file.read(data_, data_len_);
     file.close();
-    scheme_ = const_cast<T>(get_schema(data_));
+    schema_ = const_cast<T>(get_schema(data_));
   };
 
-  SchemaHandler(const char* path, T&& scheme, char* data)
-      : path_(path), scheme_(std::move(scheme)), data_(std::move(data)) {
+  SchemaHandler(const char* path, T&& schema, char* data)
+      : path_(path), schema_(std::move(schema)), data_(std::move(data)) {
     data = nullptr;
   };
 

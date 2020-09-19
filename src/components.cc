@@ -12,7 +12,7 @@ Chunk::Chunk(const char* name, int id) : name_(name), id_(id) {
   SchemaHandler<schema::Chunk*> chunk_schema(chunk_path.string().c_str(),
                                              schema::GetChunk);
 
-  auto schema_blocks = chunk_schema.scheme_->blocks();
+  auto schema_blocks = chunk_schema.schema_->blocks();
   for (int i = 0; i < schema_blocks->size(); i++) {
     auto block = schema_blocks->Get(i);
     blocks_.emplace_back(
@@ -20,12 +20,12 @@ Chunk::Chunk(const char* name, int id) : name_(name), id_(id) {
               block->has_collider(), false});
   }
 
-  pos_x_ = chunk_schema.scheme_->pos_x();
+  pos_x_ = chunk_schema.schema_->pos_x();
 }  // namespace andora
 
 void Chunk::Write() {
   assert(!name_.empty());
-  flatbuffers::FlatBufferBuilder builder(1024);
+  flatbuffers::FlatBufferBuilder builder(4098);
   std::vector<schema::Block> blocks;
 
   for (const auto& block : blocks_) {
