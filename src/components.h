@@ -33,7 +33,7 @@ using Transform = raylib::Vector2;
 using PhysicsBody = Body*;
 
 struct AnimSprite {
-  raylib::Texture2D txt;
+  raylib::Texture2D& txt;
   int sprites;
   int width;
   int height;
